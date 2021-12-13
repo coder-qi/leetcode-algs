@@ -68,12 +68,57 @@ public class LongestPalindrome {
         return max;
     }
 
+    /**
+     * 动态规划法：基于假设，如果s[i+1..j-1]是回文串，当且仅当s[i]==s[j]成立时，
+     * s[i..j]也是回文串
+     *
+     * 时间复杂：O(N^2)
+     * 空间复杂度：O(N^2)
+     */
     public static String longestPalindrome(String s) {
-        return null;
+        int length = s.length();
+        if (length <= 1) {
+            return s;
+        }
+
+        int maxLen = 1, begin = 0;
+        // dp[i][j]表示s[i..j]是否为回文串
+        boolean[][] dp = new boolean[length][length];
+        // 初始化长度为1的子串都是回文串
+        for (int i = 0; i < length; i++) {
+            dp[i][i] = true;
+        }
+        char[] charArray = s.toCharArray();
+
+        for (int l = 2; l <= length; l++) {
+            // i为左边界
+            for (int i = 0; i < length - l + 1; i++) {
+                // j为右边界
+                int j = l + i - 1;
+                if (charArray[i] != charArray[j]) {
+                    dp[i][j] = false;
+                } else {
+                    // 长度为2的回文串，例如aa, bb
+                    if (l == 2) {
+                        dp[i][j] = true;
+                    } else {
+                        dp[i][j] = dp[i + 1][j - 1];
+                    }
+                    // 更新回文串的长度
+                    if (dp[i][j] && j - i + 1 > maxLen) {
+                        maxLen = j - i + 1;
+                        begin = i;
+                    }
+                }
+
+            }
+        }
+        return s.substring(begin, begin + maxLen);
     }
 
     public static void main(String[] args) {
-        System.out.println(longestPalindrome("bacabab")); // bab
+        System.out.println(longestPalindrome("bb")); // bb
+        System.out.println(longestPalindrome("bacabab")); // bacab
         System.out.println(longestPalindrome("babad")); // bab
         System.out.println(longestPalindrome("cbbd")); // bb
         System.out.println(longestPalindrome("a")); // a
