@@ -75,7 +75,7 @@ public class LongestPalindrome {
      * 时间复杂：O(N^2)
      * 空间复杂度：O(N^2)
      */
-    public static String longestPalindrome(String s) {
+    public static String longestPalindrome_DP(String s) {
         int length = s.length();
         if (length <= 1) {
             return s;
@@ -114,6 +114,45 @@ public class LongestPalindrome {
             }
         }
         return s.substring(begin, begin + maxLen);
+    }
+
+    /**
+     * 回文中心扩展算法：状态转换方程                         <br>
+     * 1. P(i, i) = true                                <br>
+     * 2. P(i, i + 1) = (S[i] == S[i+1])                <br>
+     * 3. P(i, j) = P(i + 1, j - 1) ^ (S[i] == S[j])    <br>
+     *
+     * 状态转换：
+     * P(i, j) <- P(i + 1, j - 1) <- P(i + 2, j - 2) <- ...
+     *                                                  <br>
+     *
+     * 所有的状态在转移的时候可能性都是唯一的                  <br>
+     *
+     * 时间复杂度：O(N^2)，空间复杂度：O(1)
+     */
+    public static String longestPalindrome(String s) {
+        if (s.length() <= 1) {
+            return s;
+        }
+        int start = 0, end = 1;
+        for (int i = 0; i < s.length(); i++) {
+            int len1 = expandAroundCenter(s, i, i);
+            int len2 = expandAroundCenter(s, i, i + 1);
+            int len = Math.max(len1, len2);
+            if (len > end - start) {
+                start = i - (len - 1) / 2;
+                end = (i + len / 2) + 1;
+            }
+        }
+        return s.substring(start, end);
+    }
+
+    private static int expandAroundCenter(String s, int left, int right) {
+        while (left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
+            left--;
+            right++;
+        }
+        return right - left - 1;
     }
 
     public static void main(String[] args) {
