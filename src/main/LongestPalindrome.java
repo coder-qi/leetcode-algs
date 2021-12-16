@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 最长回文子串：https://leetcode-cn.com/problems/longest-palindromic-substring/
  */
@@ -130,7 +133,7 @@ public class LongestPalindrome {
      *
      * 时间复杂度：O(N^2)，空间复杂度：O(1)
      */
-    public static String longestPalindrome(String s) {
+    public static String longestPalindrome_expandAroundCenter(String s) {
         if (s.length() <= 1) {
             return s;
         }
@@ -153,6 +156,65 @@ public class LongestPalindrome {
             right++;
         }
         return right - left - 1;
+    }
+
+    /**
+     * Manacher 算法
+     *
+     * 时间复杂度O(N)，空间复杂度O(N)
+     */
+    public static String longestPalindrome(String s) {
+        if (s.length() <= 1) {
+            return s;
+        }
+        // 补充特殊字符#，使字符串的长度变为奇数
+        // aa -> #a#a#, aba -> #a#b#a#
+        StringBuilder sb = new StringBuilder(s.length() * 2 + 1);
+        for (int i = 0; i < s.length(); i++) {
+            sb.append('#');
+            sb.append(s.charAt(i));
+        }
+        sb.append('#');
+        s = sb.toString();
+
+        List<Integer> armLen = new ArrayList<>(s.length());
+        int start = 0, end = 0;
+        int right = -1, j = -1;
+        for (int i = 0; i < s.length(); i++) {
+            int curArmLen;
+            if (right > i) {
+                int i_sym = j * 2 - i;
+                int minArmLen = Math.min(armLen.get(i_sym), right - i);
+                curArmLen = expand(s, i - minArmLen, i + minArmLen);
+            } else {
+                curArmLen = expand(s, i, i);
+            }
+            armLen.add(curArmLen);
+            if (i + curArmLen > right) {
+                j = i;
+                right = i + curArmLen;
+            }
+            if (curArmLen * 2 > end - start) {
+                start = i - curArmLen;
+                end = i + curArmLen;
+            }
+        }
+
+        sb.setLength(0);
+        for (int i = start; i <= end; i++) {
+            if (s.charAt(i) != '#') {
+                sb.append(s.charAt(i));
+            }
+        }
+       return sb.toString();
+    }
+
+    private static int expand(String s, int left, int right) {
+        while (left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
+            left--;
+            right++;
+        }
+        return (right - left - 2) / 2;
     }
 
     public static void main(String[] args) {
