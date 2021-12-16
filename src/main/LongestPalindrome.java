@@ -183,17 +183,20 @@ public class LongestPalindrome {
         for (int i = 0; i < s.length(); i++) {
             int curArmLen;
             if (right > i) {
-                int i_sym = j * 2 - i;
+                int i_sym = j * 2 - i; // i关于j的对称点
+                // 可以跳过的臂长，min(对称点i的臂长, i距离j的最右侧的距离)
                 int minArmLen = Math.min(armLen.get(i_sym), right - i);
                 curArmLen = expand(s, i - minArmLen, i + minArmLen);
             } else {
                 curArmLen = expand(s, i, i);
             }
             armLen.add(curArmLen);
+            // 有更长的右侧时进行更新
             if (i + curArmLen > right) {
                 j = i;
                 right = i + curArmLen;
             }
+            // 更新最长的回文串
             if (curArmLen * 2 > end - start) {
                 start = i - curArmLen;
                 end = i + curArmLen;
