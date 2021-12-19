@@ -40,7 +40,7 @@ public class ZCharacterConversion {
 
     /**
      * <p>按行访问
-     * <p>思路：直接拼接每一行的下一个字符输出接口。
+     * <p>思路：直接拼接每一行的下一个字符输出即可。
      * <li>第一行和最后一行的字符距离为：2 * numRows - 2
      * <li>中间行，向下时：(numRows - i - 1) * 2，向上时：i * 2
      *
