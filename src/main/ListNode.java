@@ -33,6 +33,9 @@ public class ListNode {
         while (node != null) {
             sb.append(node.val);
             node = node.next;
+            if (node != null) {
+                sb.append("->");
+            }
         }
         return sb.toString();
     }
