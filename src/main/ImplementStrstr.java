@@ -28,32 +28,45 @@ public class ImplementStrstr {
         return -1;
     }
 
+    /**
+     * 使用KMP算法
+     *
+     * 暴力破解算法，发现不匹配的时候，都会将模式串指针重置为0，不能利用之前已经进行匹配了的信息。
+     * 我们要考虑利用已经进行了匹配的前缀来进行模式字符串的指针回退
+     *
+     */
     public static int strStr(String haystack, String needle) {
-        if (needle.length() == 0) {
+        int n = haystack.length(), m = needle.length();
+        if (m == 0) {
             return 0;
         }
-        if (haystack.length() == 0) {
-            return -1;
-        }
-        int max = haystack.length() - needle.length();
-        char first = needle.charAt(0);
-        for (int i = 0; i < haystack.length(); i++) {
-            if (haystack.charAt(i) != first) {
-                while (++i <= max && haystack.charAt(i) != first);
+        int[] pi = new int[m];
+        for (int i = 1, j = 0; i < m; i++) {
+            while (j > 0 && needle.charAt(i) != needle.charAt(j)) {
+                j = pi[j - 1];
             }
-            if (i <= max) {
-                int j = i + 1;
-                int end = j + needle.length() - 1;
-                for (int k = 1; j < end && haystack.charAt(j) == needle.charAt(k); j++, k++);
-                if (j == end) {
-                    return i;
-                }
+            if (needle.charAt(i) == needle.charAt(j)) {
+                j++;
+            }
+            pi[i] = j;
+        }
+
+        for (int i = 0, j = 0; i < n; i++) {
+            while (j > 0 && haystack.charAt(i) != needle.charAt(j)) {
+                j = pi[j - 1];
+            }
+            if (haystack.charAt(i) == needle.charAt(j)) {
+                j++;
+            }
+            if (j == m) {
+                return i - m + 1;
             }
         }
         return -1;
     }
 
     public static void main(String[] args) {
+        System.out.println(strStr("hello", "ababa")); // 2
         System.out.println(strStr("hello", "ll")); // 2
         System.out.println(strStr("aaaaa", "bba")); // -1
         System.out.println(strStr("", "")); // 0
