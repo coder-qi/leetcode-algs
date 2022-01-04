@@ -10,27 +10,36 @@ public class SubstringWithConcatenationOfAllWords {
 
     public static List<Integer> findSubstring(String s, String[] words) {
         int n = s.length(), d = words[0].length(), m = d * words.length;
-        Map<String, Integer> wordMap = new HashMap<>();
+        Map<String, Integer> wordMap = new HashMap<>(words.length);
         for (int i = 0; i < words.length; i++) {
             wordMap.compute(words[i], (key, value) -> value != null ? value + 1 : 1);
         }
 
         List<Integer> ans = new ArrayList<>();
+        Map<String, Integer> countMap = new HashMap<>(words.length);
         for (int i = 0; i <= n - m; i++) {
-            Map<String, Integer> map = new HashMap<>(wordMap);
+            boolean flag = true;
             for (int j = i; j < i + m; j += d) {
                 String w = s.substring(j, j + d);
-                Integer cnt = map.get(w);
+                if (j == i) {
+                    if (!wordMap.containsKey(w)) {
+                        flag = false;
+                        break;
+                    }
+                    countMap.putAll(wordMap);
+                }
+                Integer cnt = countMap.get(w);
                 if (cnt == null) {
+                    flag = false;
                     break;
                 }
                 if (cnt == 1) {
-                    map.remove(w);
+                    countMap.remove(w);
                 } else {
-                    map.put(w, cnt - 1);
+                    countMap.put(w, cnt - 1);
                 }
             }
-            if (map.isEmpty()) {
+            if (flag && countMap.isEmpty()) {
                 ans.add(i);
             }
          }
