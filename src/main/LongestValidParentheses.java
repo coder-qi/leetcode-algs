@@ -6,38 +6,52 @@ import java.util.LinkedList;
  */
 public class LongestValidParentheses {
 
-    public static int longestValidParentheses(String s) {
-        int n = s.length();
+    /**
+     * 使用栈
+     * 时间复杂度：O(N)
+     * 空间复杂度：O(N)
+     */
+    public static int longestValidParenthesesByStack(String s) {
+        int ans = 0;
         Deque<Integer> stack = new LinkedList<>();
-        int[] marker = new int[s.length()];
-        for (int i = 0; i < n; i++) {
+        stack.push(-1);
+        for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
             if (c == '(') {
                 stack.push(i);
             } else {
+                stack.pop();
                 if (stack.isEmpty()) {
-                    marker[i] = 1;
+                    stack.push(i);
                 } else {
-                    stack.pop();
+                    ans = Math.max(ans, i - stack.peek());
                 }
             }
         }
-        while (!stack.isEmpty()) {
-            marker[stack.pop()] = 1;
-        }
+        return ans;
+    }
 
-        int result = 0, count = 0;
-        for (int i = 0; i < n; i++) {
-            if (marker[i] == 0) {
-                count++;
-            } else {
-                result = Math.max(result, count);
-                count = 0;
+    /**
+     * 使用动态规划
+     * 时间复杂度：O(N)
+     * 空间复杂度：O(N)
+     */
+    public static int longestValidParentheses(String s) {
+        int ans = 0;
+        int[] dp = new int[s.length()];
+        for (int i = 1; i < s.length(); i++) {
+            if (s.charAt(i) == ')') {
+                if (s.charAt(i - 1) == '(') {
+                    // ....()
+                    dp[i] = (i >= 2 ? dp[i - 2] : 0) + 2;
+                } else if (i - dp[i - 1] - 1 >= 0 && s.charAt(i - dp[i - 1] - 1) == '(') {
+                    // ....))
+                    dp[i] = dp[i - 1] + (i - dp[i - 1] - 2 >= 0 ? dp[i - dp[i - 1] - 2] : 0) + 2;
+                }
+                ans = Math.max(ans, dp[i]);
             }
         }
-        result = Math.max(result, count);
-
-        return result;
+        return ans;
     }
 
     public static void main(String[] args) {
