@@ -36,7 +36,7 @@ public class LongestValidParentheses {
      * 时间复杂度：O(N)
      * 空间复杂度：O(N)
      */
-    public static int longestValidParentheses(String s) {
+    public static int longestValidParenthesesByDP(String s) {
         int ans = 0;
         int[] dp = new int[s.length()];
         for (int i = 1; i < s.length(); i++) {
@@ -49,6 +49,42 @@ public class LongestValidParentheses {
                     dp[i] = dp[i - 1] + (i - dp[i - 1] - 2 >= 0 ? dp[i - dp[i - 1] - 2] : 0) + 2;
                 }
                 ans = Math.max(ans, dp[i]);
+            }
+        }
+        return ans;
+    }
+
+    /**
+     * 两次扫描法
+     * 时间复杂度：O(N)
+     * 空间复杂度：O(1)
+     */
+    public static int longestValidParentheses(String s) {
+        int ans = 0, left = 0, right = 0;
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == '(') {
+                left++;
+            } else {
+                right++;
+            }
+            if (left == right) {
+                ans = Math.max(ans, left * 2);
+            } else if (right > left) {
+                left = right = 0;
+            }
+        }
+
+        left = right = 0;
+        for (int i = s.length() - 1; i >= 0; i--) {
+            if (s.charAt(i) == '(') {
+                left++;
+            } else {
+                right++;
+            }
+            if (left == right) {
+                ans = Math.max(ans, left * 2);
+            } else if (right < left) {
+                left = right = 0;
             }
         }
         return ans;
