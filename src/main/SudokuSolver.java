@@ -65,7 +65,7 @@ public class SudokuSolver {
                         {'.','6','.','.','.','.','2','8','.'},
                         {'.','.','.','4','1','9','.','.','5'},
                         {'.','.','.','.','8','.','.','7','9'}};
-        new SudokuSolver().solveSudoku(board);
+        new SudokuSolver2().solveSudoku(board);
         System.out.println(ArrayUtils.print(board));
         /*[["5","3","4","6","7","8","9","1","2"],
         ["6","7","2","1","9","5","3","4","8"],
@@ -76,6 +76,61 @@ public class SudokuSolver {
         ["9","6","1","5","3","7","2","8","4"],
         ["2","8","7","4","1","9","6","3","5"],
         ["3","4","5","2","8","6","1","7","9"]]*/
+    }
+
+}
+
+/**
+ * 使用位运算进行优化
+ */
+class SudokuSolver2 {
+    int[] row = new int[9];
+    int[] column = new int[9];
+    int[][] block = new int[3][3];
+    List<int[]> spaces = new ArrayList<>();
+    boolean valid = false;
+
+    public void solveSudoku(char[][] board) {
+        // 将对应的位置出现过的数字设置为true
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                char c =  board[i][j];
+                if (c == '.') {
+                    spaces.add(new int[] {i, j});
+                } else {
+                    int digit = c - '0' - 1;
+                    flip(i, j, digit);
+                }
+            }
+        }
+        dfs(board, 0);
+    }
+
+    private void dfs(char[][] board, int pos) {
+        // 已经处理完了
+        if (pos == spaces.size()) {
+            valid = true;
+            return;
+        }
+        int[] space = spaces.get(pos);
+        int i = space[0], j = space[1];
+        int mask = ~(row[i] | column[j] | block[i/3][j/3]) & 0x1ff;
+        for (; mask != 0 && !valid; mask &= (mask - 1)) {
+            int digitMask = mask & (-mask);
+            int digit = Integer.bitCount(digitMask - 1);
+            flip(i, j, digit);
+            board[i][j] = (char) (digit + '0' + 1);
+
+            dfs(board, pos + 1);
+
+            flip(i, j, digit);
+        }
+    }
+
+    private void flip(int i, int j, int digit) {
+        row[i] ^= (1 << digit);
+        column[j] ^= (1 << digit);
+        block[i/3][j/3] ^= (1 << digit);
     }
 
 }
