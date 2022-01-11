@@ -72,7 +72,7 @@ public class TrappingRainWater {
      * 时间复杂度：O(N)
      * 空间复杂度：O(N)
      */
-    public static int trap(int[] height) {
+    public static int trap_stack(int[] height) {
         Deque<Integer> stack = new LinkedList<>();
         int ans = 0;
         for (int i = 0; i < height.length; i++) {
@@ -87,6 +87,30 @@ public class TrappingRainWater {
                 ans += currHeight * currWidth;
             }
             stack.push(i);
+        }
+        return ans;
+    }
+
+    /**
+     * 双指针
+     *
+     * 时间复杂度：O(N)
+     * 空间复杂度：O(1)
+     */
+    public static int trap(int[] height) {
+        int ans = 0;
+        int left = 0, right = height.length - 1;
+        int leftMax = 0, rightMax = 0;
+        while (left < right) {
+            leftMax = Math.max(leftMax, height[left]);
+            rightMax = Math.max(rightMax, height[right]);
+            if (height[left] < height[right]) {
+                ans += leftMax - height[left];
+                left++;
+            } else {
+                ans += rightMax - height[right];
+                right--;
+            }
         }
         return ans;
     }
