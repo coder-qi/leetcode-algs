@@ -1,3 +1,6 @@
+import java.util.Deque;
+import java.util.LinkedList;
+
 /**
  * 接雨水：https://leetcode-cn.com/problems/trapping-rain-water/
  */
@@ -41,7 +44,7 @@ public class TrappingRainWater {
      * 时间复杂度：O(N)
      * 空间复杂度：O(N)
      */
-    public static int trap(int[] height) {
+    public static int trap_dp(int[] height) {
         int n = height.length;
 
         int[] leftMax = new int[n];
@@ -59,6 +62,31 @@ public class TrappingRainWater {
         int ans = 0;
         for (int i = 0; i < n; i++) {
             ans += Math.min(leftMax[i], rightMax[i]) - height[i];
+        }
+        return ans;
+    }
+
+    /**
+     * 单调栈
+     *
+     * 时间复杂度：O(N)
+     * 空间复杂度：O(N)
+     */
+    public static int trap(int[] height) {
+        Deque<Integer> stack = new LinkedList<>();
+        int ans = 0;
+        for (int i = 0; i < height.length; i++) {
+            while (!stack.isEmpty() && height[i] > height[stack.peek()]) {
+                int top = stack.pop();
+                if (stack.isEmpty()) {
+                    break;
+                }
+                int left = stack.peek();
+                int currHeight = Math.min(height[i], height[left]) - height[top];
+                int currWidth = i - left - 1;
+                ans += currHeight * currWidth;
+            }
+            stack.push(i);
         }
         return ans;
     }
