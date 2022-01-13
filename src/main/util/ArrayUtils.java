@@ -36,4 +36,17 @@ public class ArrayUtils {
         return b.toString();
     }
 
+    public static String print(int[][] arr) {
+        StringBuilder sb = new StringBuilder();
+        sb.append('[');
+        for (int i = 0; i < arr.length; i++) {
+            sb.append(Arrays.toString(arr[i]))
+                .append(",\n");
+        }
+        if (arr.length != 0) {
+            sb.setLength(sb.length() - 2);
+        }
+        sb.append("]");
+        return sb.toString();
+    }
 }
