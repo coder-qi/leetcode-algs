@@ -36,6 +36,10 @@ public class ArrayUtils {
         return b.toString();
     }
 
+    public static String print(int[] nums) {
+       return print(nums, nums.length);
+    }
+
     public static String print(int[][] arr) {
         StringBuilder sb = new StringBuilder();
         sb.append('[');
