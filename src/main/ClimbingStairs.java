@@ -1,25 +1,23 @@
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 爬楼梯：https://leetcode-cn.com/problems/climbing-stairs/
  */
 public class ClimbingStairs {
 
-    private static Map<Integer, Integer> map = new HashMap() {
+    private static List<Integer> cache = new ArrayList<>(45) {
         {
-            put(1, 1);
-            put(2, 2);
+            add(1);
+            add(2);
         }
     };
 
     public static int climbStairs(int n) {
-        if (map.containsKey(n)) {
-            return map.get(n);
+        for (int i = cache.size(); i < n; i++) {
+            cache.add(cache.get(i - 1) + cache.get(i - 2));
         }
-        int v = climbStairs(n - 1) + climbStairs(n - 2);
-        map.put(n, v);
-        return v;
+        return cache.get(n - 1);
     }
 
     public static void main(String[] args) {
