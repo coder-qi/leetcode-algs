@@ -24,7 +24,7 @@ public class ClimbingStairs {
 
     public static void main(String[] args) {
         System.out.println(climbStairs(2)); // 2
-        System.out.println(climbStairs(45)); // 2
+        System.out.println(climbStairs(45)); // 1836311903
     }
 
 }
