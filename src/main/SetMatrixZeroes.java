@@ -1,9 +1,3 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import util.ArrayUtils;
 
 /**
@@ -13,22 +7,42 @@ public class SetMatrixZeroes {
 
     public static void setZeroes(int[][] matrix) {
         int m = matrix.length, n = matrix[0].length;
-        Set<Integer> zeroRows = new HashSet<>();
-        Set<Integer> zeroColumns = new HashSet<>();
-        for (int r = 0; r < m; r++) {
-            for (int c = 0; c < n; c++) {
-                if (matrix[r][c] == 0) {
-                    zeroRows.add(r);
-                    zeroColumns.add(c);
+        boolean firstRowZero = false, firstColumnZero = false;
+        for (int i = 0; i < m; i++) {
+            if (matrix[i][0] == 0) {
+                firstColumnZero = true;
+                break;
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            if (matrix[0][i] == 0) {
+                firstRowZero = true;
+                break;
+            }
+        }
+        for (int i = 1; i < m; i++) {
+            for (int j = 1; j < n; j++) {
+                if (matrix[i][j] == 0) {
+                    matrix[i][0] = matrix[0][j] = 0;
                 }
             }
         }
-        for (int row : zeroRows) {
-            Arrays.fill(matrix[row], 0);
+        for (int i = 1; i < m; i++) {
+            for (int j = 1; j < n; j++) {
+                if (matrix[i][0] == 0 || matrix[0][j] == 0) {
+                    matrix[i][j] = 0;
+
+                }
+            }
         }
-        for (int r = 0; r < m; r++) {
-            for (int column : zeroColumns) {
-               matrix[r][column] = 0;
+        if (firstColumnZero) {
+            for (int i = 0; i < m; i++) {
+                matrix[i][0] = 0;
+            }
+        }
+        if (firstRowZero) {
+            for (int i = 0; i < n; i++) {
+                matrix[0][i] = 0;
             }
         }
     }
