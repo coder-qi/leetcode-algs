@@ -1,6 +1,4 @@
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -9,34 +7,45 @@ import java.util.Map;
 public class MinimumWindowSubstring {
 
     public static String minWindow(String s, String t) {
-        Map<Character, Integer> chars = new HashMap<>();
+        Map<Character, Integer> ori = new HashMap<>();
         for (int i = 0; i < t.length(); i++) {
-            chars.compute(t.charAt(i), (k, v) -> v == null ? 1 : v + 1);
+            char c = t.charAt(i);
+            ori.put(c, ori.getOrDefault(c, 0) + 1);
         }
-        int n = s.length(), begin = -1, end = -1;
-        List<Integer> a = new LinkedList<>();
-        Map<Character, Integer> tmp = new HashMap<>(chars);
-        for (int i = 0; i < n; i++) {
-            char c = s.charAt(i);
-            if (tmp.containsKey(c)) {
-                tmp.compute(c, (k, v) -> v == 1 ? null : v - 1);
-                a.add(i);
-                if (tmp.isEmpty()) {
-                    if (begin == -1) {
-                        begin = a.get(0);
-                        end = a.get(a.size() - 1);
-                    } else if (i - a.get(0) < end - begin) {
-                        begin = a.get(0);
-                        end = i;
-                    }
-                    tmp.put(s.charAt(a.remove(0)), 1);
+
+        Map<Character, Integer> cnt = new HashMap<>();
+        int left = 0, right = -1;
+        int len = Integer.MAX_VALUE, resultLeft = -1, resultRight = -1;
+        while (right < s.length()) {
+            right++;
+            if (right < s.length() && ori.containsKey(s.charAt(right))) {
+                cnt.put(s.charAt(right), cnt.getOrDefault(s.charAt(right), 0) + 1);
+            }
+            while (check(ori, cnt) && left <= right) {
+                if (right - left + 1 < len) {
+                    len = right - left + 1;
+                    resultLeft = left;
+                    resultRight = left + len;
                 }
+                if (ori.containsKey(s.charAt(left))) {
+                    cnt.put(s.charAt(left), cnt.getOrDefault(s.charAt(left), 0) - 1);
+                }
+                left++;
             }
         }
-        if (begin == -1) {
-            return "";
+
+        return resultLeft == -1 ? "" : s.substring(resultLeft, resultRight);
+    }
+
+    private static boolean check(Map<Character, Integer> ori, Map<Character, Integer> cnt) {
+        for (Map.Entry<Character, Integer> entry : ori.entrySet()) {
+            Character key = entry.getKey();
+            Integer val = entry.getValue();
+            if (cnt.getOrDefault(key, 0) < val) {
+                return false;
+            }
         }
-        return s.substring(begin, end + 1);
+        return true;
     }
 
     public static void main(String[] args) {
