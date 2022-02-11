@@ -13,22 +13,40 @@ public class MinimumWindowSubstring {
             ori.put(c, ori.getOrDefault(c, 0) + 1);
         }
 
-        Map<Character, Integer> cnt = new HashMap<>();
+        Map<Character, Integer> cnt = new HashMap<>(ori);
+        // 记录多余的字符数量
+        Map<Character, Integer> extraCnt = new HashMap<>();
         int left = 0, right = -1;
         int len = Integer.MAX_VALUE, resultLeft = -1, resultRight = -1;
         while (right < s.length()) {
             right++;
             if (right < s.length() && ori.containsKey(s.charAt(right))) {
-                cnt.put(s.charAt(right), cnt.getOrDefault(s.charAt(right), 0) + 1);
+                if (!cnt.containsKey(s.charAt(right))) {
+                    extraCnt.put(s.charAt(right), extraCnt.getOrDefault(s.charAt(right), 0) + 1);
+                } else {
+                    if (cnt.get(s.charAt(right)) <= 1) {
+                        cnt.remove(s.charAt(right));
+                    } else {
+                        cnt.put(s.charAt(right), cnt.getOrDefault(s.charAt(right), 0) - 1);
+                    }
+                }
             }
-            while (check(ori, cnt) && left <= right) {
+            while (cnt.isEmpty() && left <= right) {
                 if (right - left + 1 < len) {
                     len = right - left + 1;
                     resultLeft = left;
                     resultRight = left + len;
                 }
                 if (ori.containsKey(s.charAt(left))) {
-                    cnt.put(s.charAt(left), cnt.getOrDefault(s.charAt(left), 0) - 1);
+                    if (extraCnt.containsKey(s.charAt(left))) {
+                        if (extraCnt.get(s.charAt(left)) <= 1) {
+                            extraCnt.remove(s.charAt(left));
+                        } else {
+                            extraCnt.put(s.charAt(left), extraCnt.getOrDefault(s.charAt(left), 0) - 1);
+                        }
+                    } else {
+                        cnt.put(s.charAt(left), cnt.getOrDefault(s.charAt(left), 0) + 1);
+                    }
                 }
                 left++;
             }
