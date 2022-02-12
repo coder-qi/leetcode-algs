@@ -8,21 +8,22 @@ public class Combinations {
 
     public static List<List<Integer>> combine(int n, int k) {
         List<List<Integer>> result = new ArrayList<>();
-        dfs(n, k, result, new ArrayList<>(), 0);
+        List<Integer> temp = new ArrayList<>(k + 1);
+        for (int i = 1; i <= k; i++) {
+            temp.add(i);
+        }
+        temp.add(n + 1);
+        int j = 0;
+        while (j < k) {
+            result.add(new ArrayList<>(temp.subList(0, k)));
+            j = 0;
+            while (j < k && temp.get(j) + 1 == temp.get(j + 1)) {
+                temp.set(j, j + 1);
+                j++;
+            }
+            temp.set(j, temp.get(j) + 1);
+        }
         return result;
-    }
-
-    private static void dfs(int n, int k, List<List<Integer>> result,
-        ArrayList<Integer> list, int index) {
-        if (index == k) {
-            result.add(new ArrayList<>(list));
-            return;
-        }
-        for (int i = list.isEmpty() ? 0 : list.get(list.size() - 1); i < n; i++) {
-            list.add(i + 1);
-            dfs(n, k, result, list, index + 1);
-            list.remove(list.size() - 1);
-        }
     }
 
     public static void main(String[] args) {
