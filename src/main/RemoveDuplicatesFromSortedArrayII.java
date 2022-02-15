@@ -6,22 +6,13 @@ import util.ArrayUtils;
 public class RemoveDuplicatesFromSortedArrayII {
 
     public static int removeDuplicates(int[] nums) {
-        int n = nums.length, i = 0, j = 0;
-        while (i < n) {
-            if (i == n - 1 || nums[i] != nums[i + 1]) {
-                nums[j++] = nums[i++];
-            }
-            if (i + 1 < n && nums[i] == nums[i + 1]) {
-                nums[j++] = nums[i++];
-            }
-            if (i < n && nums[i - 1] == nums[i]) {
-                nums[j++] = nums[i++];
-            }
-            while (i < n && nums[i - 1] == nums[i]) {
-                i++;
+        int i = 0;
+        for (int num : nums) {
+            if (i < 2 || num > nums[i - 2]) {
+                nums[i++] = num;
             }
         }
-        return j;
+        return i;
     }
 
     public static void main(String[] args) {
