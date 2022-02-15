@@ -7,19 +7,19 @@ import java.util.List;
 public class Subsets {
 
     public static List<List<Integer>> subsets(int[] nums) {
+        int n = nums.length;
         List<List<Integer>> result = new ArrayList<>();
-        dfs(nums, result, new ArrayList<>(), 0);
-        return result;
-    }
-
-    private static void dfs(int[] nums, List<List<Integer>> result,
-        List<Integer> list, int index) {
-        result.add(new ArrayList<>(list));
-        for (int i = index; i < nums.length; i++) {
-            list.add(nums[i]);
-            dfs(nums, result, list, i + 1);
-            list.remove(list.size() - 1);
+        List<Integer> list = new ArrayList<>();
+        for (int mask = 0; mask < (1 << n); mask++) {
+            list.clear();
+            for (int i = 0; i < n; i++) {
+                if ((mask & (1 << i)) != 0) {
+                    list.add(nums[i]);
+                }
+            }
+            result.add(new ArrayList<>(list));
         }
+        return result;
     }
 
     public static void main(String[] args) {
