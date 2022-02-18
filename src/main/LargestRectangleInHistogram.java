@@ -13,20 +13,28 @@ public class LargestRectangleInHistogram {
         Map<Integer, Integer> map = new HashMap<>();
         map.put(heights[0], 1);
         for (int i = 1; i < n; i++) {
-            map.put(heights[i], map.getOrDefault(heights[i], 0));
+            int cnt = map.getOrDefault(heights[i], 0) + 1;
+            boolean curUp = heights[i - 1] <= heights[i];
             for (Iterator<Map.Entry<Integer, Integer>> it = map.entrySet().iterator(); it.hasNext();) {
                 Map.Entry<Integer, Integer> entry = it.next();
-                //if (entry.getKey() != heights[i]) {
-                    if ((heights[i - 1] <= heights[i] && entry.getKey() <= heights[i]) || entry.getValue() == 0) {
+                if (curUp) {
+                    if (entry.getKey() <= heights[i]) {
                         map.put(entry.getKey(), entry.getValue() + 1);
-                    } else {
-                        it.remove();
                     }
-                //}
+                } else {
+                    if (entry.getKey() > heights[i]) {
+                        cnt++;
+                    }
+                    it.remove();
+                }
                 if (entry.getKey() * entry.getValue() > ans) {
                     ans = entry.getKey() * entry.getValue();
                 }
             }
+            if (heights[i] * cnt > ans) {
+                ans = heights[i] * cnt;
+            }
+            map.put(heights[i], cnt);
         }
         return ans;
     }
@@ -39,6 +47,8 @@ public class LargestRectangleInHistogram {
         System.out.println(largestRectangleArea(new int[] {0, 9}));
         System.out.println(largestRectangleArea(new int[] {1, 1}));
         System.out.println(largestRectangleArea(new int[] {2, 1, 2}));
+        System.out.println(largestRectangleArea(new int[] {4,2,0,3,2,5}));
+        System.out.println(largestRectangleArea(new int[] {2,1,4,5,1,3,3}));
     }
 
 }
