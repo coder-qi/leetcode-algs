@@ -12,22 +12,16 @@ import java.util.Stack;
 public class LargestRectangleInHistogram {
 
     public static int largestRectangleArea(int[] heights) {
-        int n = heights.length;
-        int[] left = new int[n];
-        int[] right = new int[n];
-        Arrays.fill(right, n);
+        int[] tmp = new int[heights.length + 2];
+        System.arraycopy(heights, 0, tmp, 1, heights.length);
         Deque<Integer> stack = new ArrayDeque<>();
-        for (int i = 0; i < n; i++) {
-            while (!stack.isEmpty() && heights[stack.peek()] >= heights[i]) {
-                right[stack.peek()] = i;
-                stack.pop();
-            }
-            left[i] = stack.isEmpty() ? -1 : stack.peek();
-            stack.push(i);
-        }
         int ans = 0;
-        for (int i = 0; i < n; i++) {
-            ans = Math.max(ans, (right[i] - left[i] - 1) * heights[i]);
+        for (int i = 0; i < tmp.length; i++) {
+            while (!stack.isEmpty() && tmp[stack.peek()] > tmp[i]) {
+                int h = tmp[stack.pop()];
+                ans = Math.max(ans, (i - stack.peek() - 1) * h);
+            }
+            stack.push(i);
         }
         return ans;
     }
