@@ -1,34 +1,46 @@
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 /**
  * 最大矩形：https://leetcode-cn.com/problems/maximal-rectangle/
  */
 public class MaximalRectangle {
 
-    public static int maximalRectangle(char[][] matrix) {
+    private int[] heights;
+    private int[] newHeights;
+    private Deque<Integer> stack;
+
+    public int maximalRectangle(char[][] matrix) {
         int m = matrix.length, n = matrix[0].length;
-        int[][] dp = new int[m][n];
-        if (matrix[0][0] == '1') {
-            dp[0][0] = 1;
-        }
+        heights = new int[n];
+        newHeights = new int[n + 2];
+        stack = new ArrayDeque<>();
+
         int ans = 0;
-        for (int i = 1; i < m; i++) {
-            if (matrix[i][0] == '1') {
-                dp[i][0] = dp[i - 1][0] + 1;
-                ans = Math.max(ans, dp[i][0]);
-            }
-        }
-        for (int i = 1; i < n; i++) {
-            if (matrix[0][i] == '1') {
-                dp[0][i] = dp[0][i - 1] + 1;
-                ans = Math.max(ans, dp[0][i]);
-            }
-        }
-        for (int i = 1; i < m; i++) {
-            for (int j = 1; j < n; j++) {
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
                 if (matrix[i][j] == '1') {
-                    //dp[i][j] = dp[0][i - 1] + 1;
-                    ans = Math.max(ans, dp[i][j]);
+                    heights[j] += 1;
+                } else {
+                    heights[j] = 0;
                 }
             }
+            // 转换为求连续的矩形的最大面积
+            ans = Math.max(ans, largestRectangleArea());
+        }
+        return ans;
+    }
+
+    private int largestRectangleArea() {
+        int ans = 0;
+        stack.clear();
+        System.arraycopy(heights, 0, newHeights, 1, heights.length);
+        for (int i = 0; i < newHeights.length; i++) {
+            while (!stack.isEmpty() && newHeights[i] < newHeights[stack.peek()]) {
+                int h = newHeights[stack.pop()];
+                ans = Math.max(ans, (i - stack.peek() - 1) * h);
+            }
+            stack.push(i);
         }
         return ans;
     }
@@ -39,7 +51,16 @@ public class MaximalRectangle {
             {'1','0','1','1','1'},
             {'1','1','1','1','1'},
             {'1','0','0','1','0'}};
-        System.out.println(maximalRectangle(matrix));
+        System.out.println(new MaximalRectangle().maximalRectangle(matrix)); // 6
+
+        char[][] matrix2 = {{'0'}};
+        System.out.println(new MaximalRectangle().maximalRectangle(matrix2)); // 0
+
+        char[][] matrix3 = {{'1'}};
+        System.out.println(new MaximalRectangle().maximalRectangle(matrix2)); // 1
+
+        char[][] matrix4 = {{'0', '0'}};
+        System.out.println(new MaximalRectangle().maximalRectangle(matrix4)); // 0
     }
 
 }
