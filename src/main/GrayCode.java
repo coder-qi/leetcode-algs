@@ -6,34 +6,13 @@ import java.util.List;
  */
 public class GrayCode {
 
-    List<Integer> result;
-    int n;
-    int max;
-    boolean[] vis;
-
     public List<Integer> grayCode(int n) {
-        this.n = n;
-        max = 1 << n;
-        result = new ArrayList<>(max);
-        vis = new boolean[max];
-        dfs(0);
+        int max = 1 << n;
+        List<Integer> result = new ArrayList<>(max);
+        for (int i = 0; i < max; i++) {
+            result.add(i ^ (i >> 1));
+        }
         return result;
-    }
-
-    private boolean dfs(int cur) {
-        if (result.size() == max) {
-            return true;
-        }
-        result.add(cur);
-        vis[cur] = true;
-        for (int j = 0; j < n; j++) {
-            int num = (1 << j) ^ cur;
-            if (!vis[num] && dfs(num)) {
-                return true;
-            }
-        }
-        vis[cur] = false;
-        return false;
     }
 
     public static void main(String[] args) {
