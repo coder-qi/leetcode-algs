@@ -8,6 +8,7 @@ public class ReverseLinkedListII {
         dummy.next = head;
         head = dummy;
 
+        // 获取left位置左侧的head
         int pos = 1;
         while (pos < left) {
             head = head.next;
