@@ -19,6 +19,30 @@ public class TreeNode {
         this.right = right;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        toString(this, result);
+        return "[" + result.toString() + "]";
+    }
+
+    private void toString(TreeNode root, StringBuilder result) {
+        if (result.length() > 0) {
+            result.append(',');
+        }
+        if (root == null) {
+            result.append("null");
+        } else {
+            result.append(root.val);
+            if (root.left == null && root.right == null) {
+                return;
+            }
+            toString(root.left, result);
+            toString(root.right, result);
+        }
+
+    }
+
     public static TreeNode of(Integer... nums) {
         TreeNode root = new TreeNode(nums[0]);
         Deque<TreeNode> stack = new LinkedList<>();
