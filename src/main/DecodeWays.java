@@ -4,28 +4,16 @@
 public class DecodeWays {
 
     public int numDecodings(String s) {
-        int[] dp = new int[s.length()];
+        int[] dp = new int[s.length() + 1];
         dp[0] = s.charAt(0) == '0' ? 0 : 1;
-        for (int i = 1; i < s.length(); i++) {
-            char cur = s.charAt(i);
-            char prev = s.charAt(i - 1);
-            if (cur == '0') {
-                if (prev == '0' || prev >= '3') {
-                    break;
-                }
-                dp[i] = dp[i - 1];
-            } else {
-                if (i + 1 < s.length() && s.charAt(i + 1) == '0') {
-                    dp[i] += dp[i - 1];
-                    continue;
-                }
-                if (prev == '1' || (prev == '2' && cur <= '6')) {
-                    dp[i] += i >= 2 ? dp[i - 2] : 1;
-                }
-                dp[i] += dp[i - 1];
+        for (int i = 0; i < s.length(); i++) {
+            dp[i + 1] = s.charAt(i) == '0' ? 0 : dp[i];
+            if (i > 0 && (s.charAt(i - 1) == '1'
+                || (s.charAt(i - 1) == '2' && s.charAt(i) <= '6'))) {
+                dp[i + 1] += dp[i - 1];
             }
         }
-        return dp[s.length() - 1];
+        return dp[s.length()];
     }
 
     public static void main(String[] args) {
