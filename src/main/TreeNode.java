@@ -22,25 +22,23 @@ public class TreeNode {
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
+        result.append(this.val);
         toString(this, result);
         return "[" + result.toString() + "]";
     }
 
     private void toString(TreeNode root, StringBuilder result) {
-        if (result.length() > 0) {
-            result.append(',');
+        if (root.left == null && root.right == null) {
+            return;
         }
-        if (root == null) {
-            result.append("null");
-        } else {
-            result.append(root.val);
-            if (root.left == null && root.right == null) {
-                return;
-            }
+        result.append(',').append(root.left != null ? root.left.val : null);
+        result.append(',').append(root.right != null ? root.right.val : null);
+        if (root.left != null) {
             toString(root.left, result);
+        }
+        if (root.right != null) {
             toString(root.right, result);
         }
-
     }
 
     public static TreeNode of(Integer... nums) {
