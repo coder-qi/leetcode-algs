@@ -23,16 +23,12 @@ public class BinaryTreeInorderTraversal {
 
     public static void main(String[] args) {
         // [1,null,2,3]
-        TreeNode root = new TreeNode(1, null,
-            new TreeNode(2, new TreeNode(3, null, null), null));
-        System.out.println(inorderTraversal(root)); // [1,3,2]
+        System.out.println(inorderTraversal(TreeNode.of(1,null,2,3))); // [1,3,2]
 
         // []
-        root = null;
-        System.out.println(inorderTraversal(root)); // []
+        System.out.println(inorderTraversal(null)); // []
 
         // [1]
-        root = new TreeNode(1, null, null);
-        System.out.println(inorderTraversal(root)); // [1]
+        System.out.println(inorderTraversal(TreeNode.of(1))); // [1]
     }
 }
