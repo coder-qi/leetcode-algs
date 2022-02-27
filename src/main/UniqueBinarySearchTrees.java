@@ -3,28 +3,15 @@
  */
 public class UniqueBinarySearchTrees {
 
-    int[][] memo;
-
     public int numTrees(int n) {
-        memo = new int[n + 1][n + 1];
-        return numTrees(1, n);
-    }
-
-    private int numTrees(int start, int end) {
-        if (start > end) {
-            return 1;
+        int[] g = new int[n + 1];
+        g[0] = g[1] = 1;
+        for (int i = 2; i <= n; i++) {
+            for (int j = 1; j <= i; j++) {
+                g[i] += g[j - 1] * g[i - j];
+            }
         }
-        if (memo[start][end] != 0) {
-            return memo[start][end];
-        }
-        int count = 0;
-        for (int i = start; i <= end; i++) {
-            int leftCount = numTrees(start, i - 1);
-            int rightCount = numTrees(i + 1, end);
-            count += leftCount * rightCount;
-        }
-        memo[start][end] = count;
-        return count;
+        return g[n];
     }
 
     public static void main(String[] args) {
