@@ -49,18 +49,23 @@ public class TreeNode {
         while (i < nums.length && !stack.isEmpty()) {
             Integer num = nums[i++];
             TreeNode node = stack.pop();
+            TreeNode left = null, right = null;
             if (num != null) {
-                TreeNode left = new TreeNode(num);
+                left = new TreeNode(num);
                 node.left = left;
-                stack.push(left);
             }
             if (i < nums.length) {
                 num = nums[i++];
                 if (num != null) {
-                    TreeNode right = new TreeNode(num);
+                    right = new TreeNode(num);
                     node.right = right;
-                    stack.push(right);
                 }
+            }
+            if (right != null) {
+                stack.push(right);
+            }
+            if (left != null) {
+                stack.push(left);
             }
         }
         return root;
