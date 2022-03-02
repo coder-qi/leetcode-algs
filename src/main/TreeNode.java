@@ -21,10 +21,11 @@ public class TreeNode {
 
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder();
+        /*StringBuilder result = new StringBuilder();
         result.append(this.val);
         toString(this, result);
-        return "[" + result.toString() + "]";
+        return "[" + result.toString() + "]";*/
+        return String.valueOf(val);
     }
 
     private void toString(TreeNode root, StringBuilder result) {

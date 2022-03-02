@@ -3,30 +3,44 @@
  */
 public class RecoverBinarySearchTree {
 
-    TreeNode first, second, last;
-
     public void recoverTree(TreeNode root) {
-        dfs(root);
+        TreeNode x = null, y = null, pred = null, predecessor = null;
+        while (root != null) {
+            if (root.left != null) {
+                predecessor = root.left;
+                while (predecessor.right != null && predecessor.right != root) {
+                    predecessor = predecessor.right;
+                }
+                if (predecessor.right == null) {
+                    predecessor.right = root;
+                    root = root.left;
+                } else {
+                    if (pred != null && root.val < pred.val) {
+                        y = root;
+                        if (x == null) {
+                            x = pred;
+                        }
+                    }
+                    pred = root;
 
-        int t = first.val;
-        first.val = second.val;
-        second.val = t;
-    }
-
-    private void dfs(TreeNode root) {
-        if (root == null) {
-            return;
-        }
-
-        dfs(root.left);
-        if (last != null && last.val > root.val) {
-            if (first == null) {
-                first = last;
+                    predecessor.right = null;
+                    root = root.right;
+                }
+            } else {
+                if (pred != null && root.val < pred.val) {
+                    y = root;
+                    if (x == null) {
+                        x = pred;
+                    }
+                }
+                pred = root;
+                root = root.right;
             }
-            second = root;
         }
-        last = root;
-        dfs(root.right);
+
+        int t = x.val;
+        x.val = y.val;
+        y.val = t;
     }
 
     public static void main(String[] args) {
