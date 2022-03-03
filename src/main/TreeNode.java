@@ -1,5 +1,6 @@
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.Queue;
 
 public class TreeNode {
     int val;
@@ -44,29 +45,24 @@ public class TreeNode {
 
     public static TreeNode of(Integer... nums) {
         TreeNode root = new TreeNode(nums[0]);
-        Deque<TreeNode> stack = new LinkedList<>();
-        stack.push(root);
+        Queue<TreeNode> stack = new LinkedList<>();
+        stack.offer(root);
         int i = 1;
         while (i < nums.length && !stack.isEmpty()) {
             Integer num = nums[i++];
-            TreeNode node = stack.pop();
-            TreeNode left = null, right = null;
+            TreeNode node = stack.poll();
             if (num != null) {
-                left = new TreeNode(num);
+                TreeNode left = new TreeNode(num);
                 node.left = left;
+                stack.offer(left);
             }
             if (i < nums.length) {
                 num = nums[i++];
                 if (num != null) {
-                    right = new TreeNode(num);
+                    TreeNode right = new TreeNode(num);
                     node.right = right;
+                    stack.offer(right);
                 }
-            }
-            if (right != null) {
-                stack.push(right);
-            }
-            if (left != null) {
-                stack.push(left);
             }
         }
         return root;
