@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,26 +10,41 @@ public class BinaryTreeZigzagLevelOrderTraversal {
 
     public static List<List<Integer>> zigzagLevelOrder(TreeNode root) {
         List<List<Integer>> result = new ArrayList<>();
-        dfs(root, 0, result);
-        return result;
-    }
-
-    private static void dfs(TreeNode root, int level, List<List<Integer>> result) {
         if (root == null) {
-            return;
+            return result;
         }
-        if (result.size() <= level) {
-            result.add(new LinkedList<>());
+
+        boolean lr = true;
+        Deque<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            List<Integer> zigzagLevel = new ArrayList<>();
+            result.add(zigzagLevel);
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                TreeNode node = lr ? queue.pollFirst() : queue.pollLast();
+                zigzagLevel.add(node.val);
+
+                if (lr) {
+                    if (node.left != null) {
+                        queue.offerLast(node.left);
+                    }
+                    if (node.right != null) {
+                        queue.offerLast(node.right);
+                    }
+                } else {
+                    if (node.right != null) {
+                        queue.offerFirst(node.right);
+                    }
+                    if (node.left != null) {
+                        queue.offerFirst(node.left);
+                    }
+                }
+            }
+
+            lr = !lr;
         }
-        List<Integer> levelList = result.get(level);
-        // 从左往右
-        if (level % 2 == 0) {
-            levelList.add(root.val);
-        } else {
-            levelList.add(0, root.val);
-        }
-        dfs(root.left, level + 1, result);
-        dfs(root.right, level + 1, result);
+        return result;
     }
 
     public static void main(String[] args) {
