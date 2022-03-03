@@ -1,5 +1,7 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 /**
  * 二叉树的层序遍历：https://leetcode-cn.com/problems/binary-tree-level-order-traversal/
@@ -8,20 +10,27 @@ public class BinaryTreeLevelOrderTraversal {
 
     public static List<List<Integer>> levelOrder(TreeNode root) {
         List<List<Integer>> result = new ArrayList<>();
-        dfs(root, 0, result);
-        return result;
-    }
-
-    private static void dfs(TreeNode root, int i, List<List<Integer>> result) {
         if (root == null) {
-            return;
+            return result;
         }
-        if (result.size() <= i) {
-            result.add(new ArrayList<>());
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            int len = queue.size();
+            List<Integer> levelList = new ArrayList<>();
+            result.add(levelList);
+            for (int i = 0; i < len && !queue.isEmpty(); i++) {
+                TreeNode node = queue.poll();
+                levelList.add(node.val);
+                if (node.left != null) {
+                    queue.offer(node.left);
+                }
+                if (node.right != null) {
+                    queue.offer(node.right);
+                }
+            }
         }
-        result.get(i).add(root.val);
-        dfs(root.left, i + 1, result);
-        dfs(root.right, i + 1, result);
+        return result;
     }
 
     public static void main(String[] args) {
