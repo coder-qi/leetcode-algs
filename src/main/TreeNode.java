@@ -25,13 +25,10 @@ public class TreeNode {
         StringBuilder result = new StringBuilder();
         result.append(this.val);
         toString(this, result);
-        return "[" + result.toString() + "]";
+        return "[" + result.toString().replaceAll("(,null)+$", "") + "]";
     }
 
     private void toString(TreeNode root, StringBuilder result) {
-        if (root.left == null && root.right == null) {
-            return;
-        }
         result.append(',').append(root.left != null ? root.left.val : null);
         result.append(',').append(root.right != null ? root.right.val : null);
         if (root.left != null) {
