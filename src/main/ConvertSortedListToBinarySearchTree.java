@@ -3,32 +3,38 @@
  */
 public class ConvertSortedListToBinarySearchTree {
 
-    public static TreeNode sortedListToBST(ListNode head) {
-        return buildTree(head, null);
+    ListNode globalHead;
+
+    public TreeNode sortedListToBST(ListNode head) {
+        globalHead = head;
+        int len = getLength(head);
+        return buildTree(0, len - 1);
     }
 
-    private static TreeNode buildTree(ListNode left, ListNode right) {
-        if (left == right) {
+    private int getLength(ListNode head) {
+        int len = 0;
+        while (head != null) {
+            len++;
+            head = head.next;
+        }
+        return len;
+    }
+
+    private TreeNode buildTree(int left, int right) {
+        if (left > right) {
             return null;
         }
-        ListNode mid = getMedian(left, right);
-        TreeNode root = new TreeNode(mid.val);
-        root.left = buildTree(left, mid);
-        root.right = buildTree(mid.next, right);
+        int mid = (left + right + 1) / 2;
+        TreeNode root = new TreeNode();
+        root.left = buildTree(left, mid - 1);
+        root.val = globalHead.val;
+        globalHead = globalHead.next;
+        root.right = buildTree(mid + 1, right);
         return root;
     }
 
-    private static ListNode getMedian(ListNode left, ListNode right) {
-        ListNode fast = left, slow = left;
-        while (fast != right && fast.next != right) {
-            fast = fast.next.next;
-            slow = slow.next;
-        }
-        return slow;
-    }
-
     public static void main(String[] args) {
-        System.out.println(sortedListToBST(ListNode.of(-10, -3, 0, 5, 9)));
+        System.out.println(new ConvertSortedListToBinarySearchTree().sortedListToBST(ListNode.of(-10, -3, 0, 5, 9)));
     }
 
 }
