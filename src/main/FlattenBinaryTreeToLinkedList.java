@@ -1,23 +1,23 @@
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.Stack;
-
 /**
  * 二叉树展开为链表：https://leetcode-cn.com/problems/flatten-binary-tree-to-linked-list/
  */
 public class FlattenBinaryTreeToLinkedList {
 
-    TreeNode last;
-
     public void flatten(TreeNode root) {
-        if (root == null) {
-            return;
-        }
-        flatten(root.right);
-        flatten(root.left);
-        root.right = last;
-        root.left = null;
-        last = root;
+       TreeNode cur = root;
+       while (cur != null) {
+           if (cur.left != null) {
+               TreeNode next = cur.left;
+               TreeNode predecessor = next;
+               while (predecessor.right != null) {
+                   predecessor = predecessor.right;
+               }
+               predecessor.right = cur.right;
+               cur.left = null;
+               cur.right = next;
+           }
+           cur = cur.right;
+       }
     }
 
     public static void main(String[] args) {
