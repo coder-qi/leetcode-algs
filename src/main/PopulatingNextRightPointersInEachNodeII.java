@@ -1,39 +1,44 @@
-import java.util.Deque;
-import java.util.LinkedList;
-
 /**
  * 填充每个节点的下一个右侧节点指针 II：https://leetcode-cn.com/problems/populating-next-right-pointers-in-each-node-ii/
  */
 public class PopulatingNextRightPointersInEachNodeII {
 
-    public static Node connect(Node root) {
+    private Node last = null, nextStart = null;
+
+    public Node connect(Node root) {
         if (root == null) {
             return null;
         }
-        Deque<Node> queue = new LinkedList<>();
-        queue.offer(root);
-        while (!queue.isEmpty()) {
-            int count = queue.size();
-            Node prev = null;
-            for (int i = 0; i < count; i++) {
-                Node cur = queue.poll();
-                if (prev != null) {
-                    prev.next = cur;
+        Node cur = root;
+        while (cur != null) {
+            last = nextStart = null;
+            for (Node p = cur; p != null; p = p.next) {
+                if (p.left != null) {
+                    handle(p.left);
                 }
-                if (cur.left != null) {
-                    queue.offer(cur.left);
+                if (p.right != null) {
+                    handle(p.right);
                 }
-                if (cur.right != null) {
-                    queue.offer(cur.right);
-                }
-                prev = cur;
             }
+            cur = nextStart;
         }
         return root;
     }
 
+    private void handle(Node p) {
+        if (last != null) {
+            last.next = p;
+        }
+        if (nextStart == null) {
+            nextStart = p;
+        }
+        last = p;
+    }
+
     public static void main(String[] args) {
-        System.out.println(connect(Node.of(1,2,3,4,5,null,7)));
+        System.out.println(new PopulatingNextRightPointersInEachNodeII().connect(Node.of(1,2,3,4,5,null,7)));
+        System.out.println(new PopulatingNextRightPointersInEachNodeII().connect(Node.of(1,2,3,4,null,null,5)));
+        System.out.println(new PopulatingNextRightPointersInEachNodeII().connect(Node.of(-1,-7,9,null,null,-1,-7,null,8,-9)));
     }
 
 }
