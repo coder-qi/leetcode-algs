@@ -27,6 +27,7 @@ public class Triangle {
             result = Math.min(result, dp[i]);
         }
         return result;
+
     }
 
     public static void main(String[] args) {
