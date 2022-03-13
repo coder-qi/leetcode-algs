@@ -24,16 +24,8 @@ public class ValidPalindrome {
     }
 
     private static int normal(char c) {
-        if (c >= 'a' && c <= 'z') {
-            return c;
-        }
-        if (c >= 'A' && c <= 'Z') {
-            return c - 'A' + 'a';
-        }
-        if (c >= '0' && c <= '9') {
-            return c;
-        }
-        return 0;
+        c = Character.toLowerCase(c);
+        return Character.isLetterOrDigit(c) ? c : 0;
     }
 
     public static void main(String[] args) {
