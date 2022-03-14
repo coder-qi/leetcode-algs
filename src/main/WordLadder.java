@@ -26,22 +26,46 @@ public class WordLadder {
             return 0;
         }
 
-        int[] distance = new int[nodeNum];
-        Arrays.fill(distance, Integer.MAX_VALUE);
-        int beginId = wordIdMap.get(beginWord), endId = wordIdMap.get(endWord);
-        distance[beginId] = 0;
+        int[] distanceBegin = new int[nodeNum];
+        Arrays.fill(distanceBegin, Integer.MAX_VALUE);
+        int beginId = wordIdMap.get(beginWord);
+        distanceBegin[beginId] = 0;
+        Queue<Integer> qBegin = new LinkedList<>();
+        qBegin.offer(beginId);
 
-        Queue<Integer> q = new LinkedList<>();
-        q.offer(beginId);
-        while (!q.isEmpty()) {
-            int x = q.poll();
-            if (x == endId) {
-                return distance[x] / 2 + 1;
+        int[] distanceEnd = new int[nodeNum];
+        Arrays.fill(distanceEnd, Integer.MAX_VALUE);
+        int endId = wordIdMap.get(endWord);
+        distanceEnd[endId] = 0;
+        Queue<Integer> qEnd = new LinkedList<>();
+        qEnd.offer(endId);
+
+        while (!qBegin.isEmpty() && !qEnd.isEmpty()) {
+            int qBeginSize = qBegin.size();
+            for (int i = 0; i < qBeginSize; i++) {
+                int nodeBegin = qBegin.poll();
+                if (distanceEnd[nodeBegin] != Integer.MAX_VALUE) {
+                    return (distanceBegin[nodeBegin] + distanceEnd[nodeBegin]) / 2 + 1;
+                }
+                for (int id : edges.get(nodeBegin)) {
+                    if (distanceBegin[id] == Integer.MAX_VALUE) {
+                        distanceBegin[id] = distanceBegin[nodeBegin] + 1;
+                        qBegin.offer(id);
+                    }
+                }
             }
-            for (int id : edges.get(x)) {
-                if (distance[id] == Integer.MAX_VALUE) {
-                    distance[id] = distance[x] + 1;
-                    q.offer(id);
+
+            int qEndSize = qEnd.size();
+            for (int i = 0; i < qEndSize; i++) {
+                int nodeEnd = qEnd.poll();
+                if (distanceBegin[nodeEnd] != Integer.MAX_VALUE) {
+                    return (distanceBegin[nodeEnd] + distanceEnd[nodeEnd]) / 2 + 1;
+                }
+                for (int id : edges.get(nodeEnd)) {
+                    if (distanceEnd[id] == Integer.MAX_VALUE) {
+                        distanceEnd[id] = distanceEnd[nodeEnd] + 1;
+                        qEnd.offer(id);
+                    }
                 }
             }
         }
