@@ -1,6 +1,9 @@
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 
 /**
@@ -8,40 +11,64 @@ import java.util.Queue;
  */
 public class WordLadder {
 
+    Map<String, Integer> wordIdMap;
+    List<List<Integer>> edges;
+    int nodeNum = 0;
+
     public int ladderLength(String beginWord, String endWord, List<String> wordList) {
-        Queue<String> queue = new LinkedList<>();
-        queue.offer(beginWord);
-        boolean[] marked = new boolean[wordList.size() + 1];
-        int level = 1;
-        while (!queue.isEmpty()) {
-            level++;
-            for (int i = 0, size = queue.size(); i < size; i++) {
-                String s = queue.poll();
-                for (int j = 0; j < wordList.size(); j++) {
-                    if (!marked[j]) {
-                        String word = wordList.get(j);
-                        if (check(s, word)) {
-                            if (word.equals(endWord)) {
-                                return level;
-                            }
-                            queue.offer(word);
-                            marked[j] = true;
-                        }
-                    }
+        wordIdMap = new HashMap<>(wordList.size());
+        edges = new ArrayList<>(wordList.size());
+        for (String word : wordList) {
+            addEdge(word);
+        }
+        addEdge(beginWord);
+        if (!wordIdMap.containsKey(endWord)) {
+            return 0;
+        }
+
+        int[] distance = new int[nodeNum];
+        Arrays.fill(distance, Integer.MAX_VALUE);
+        int beginId = wordIdMap.get(beginWord), endId = wordIdMap.get(endWord);
+        distance[beginId] = 0;
+
+        Queue<Integer> q = new LinkedList<>();
+        q.offer(beginId);
+        while (!q.isEmpty()) {
+            int x = q.poll();
+            if (x == endId) {
+                return distance[x] / 2 + 1;
+            }
+            for (int id : edges.get(x)) {
+                if (distance[id] == Integer.MAX_VALUE) {
+                    distance[id] = distance[x] + 1;
+                    q.offer(id);
                 }
             }
         }
         return 0;
     }
 
-    private boolean check(String word1, String word2) {
-        int diffCnt = 0;
-        for (int i = 0; i < word1.length(); i++) {
-            if (word1.charAt(i) != word2.charAt(i)) {
-                diffCnt ++;
-            }
+    private void addEdge(String word) {
+        addWord(word);
+        int wordId = wordIdMap.get(word);
+        char[] chars = word.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            char c = chars[i];
+            chars[i] = '*';
+            String newWord = new String(chars);
+            addWord(newWord);
+            int newWordId = wordIdMap.get(newWord);
+            edges.get(wordId).add(newWordId);
+            edges.get(newWordId).add(wordId);
+            chars[i] = c;
         }
-        return  diffCnt == 1;
+    }
+
+    private void addWord(String word) {
+        if (!wordIdMap.containsKey(word)) {
+            wordIdMap.put(word, nodeNum++);
+            edges.add(new ArrayList<>());
+        }
     }
 
     public static void main(String[] args) {
