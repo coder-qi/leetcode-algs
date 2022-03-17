@@ -11,17 +11,15 @@ public class SurroundedRegions {
 
     public static void solve(char[][] board) {
         int m = board.length, n = board[0].length;
-        int[][] dp = new int[m][n];
 
         int row = 0, column = 0;
         for (int i = 0; i < directs.length; i++) {
             int[] direct = directs[i];
             while (row >= 0 && row < m && column >= 0 && column < n) {
-                dp[row][column] = 1;
                 if (board[row][column] == 'O') {
-                    dp[row][column] = 2;
+                    board[row][column] = '*';
                     int[] nextDirect = directs[(i + 1) % directs.length];
-                    solve(row + nextDirect[0], column + nextDirect[1], board, dp);
+                    dfs(row + nextDirect[0], column + nextDirect[1], board);
                 }
                 row += direct[0];
                 column += direct[1];
@@ -33,22 +31,22 @@ public class SurroundedRegions {
 
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                board[i][j] = dp[i][j] == 2 ? 'O' : 'X';
+                board[i][j] = board[i][j] == '*' ? 'O' : 'X';
             }
         }
     }
 
-    private static void solve(int row, int column, char[][] board, int[][] dp) {
+    private static void dfs(int row, int column, char[][] board) {
         int m = board.length, n = board[0].length;
         if (row < 0 || row >= m || column < 0 || column >= n
-                || board[row][column] == 'X' || dp[row][column] != 0) {
+                || board[row][column] == 'X' || board[row][column] == '*') {
             return;
         }
-        dp[row][column] = 2;
+        board[row][column] = '*';
         for (int[] direct : directs) {
             int nextRow = row + direct[0];
             int nextColumn = column + direct[1];
-            solve(nextRow, nextColumn, board, dp);
+            dfs(nextRow, nextColumn, board);
         }
     }
 
