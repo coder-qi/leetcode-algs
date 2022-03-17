@@ -24,7 +24,7 @@ public class PalindromePartitioning {
             return;
         }
         for (int j = i + 1; j <= s.length(); j++) {
-            if (isPalindrome(s, i, j)) {
+            if (isPalindrome(s, i, j - 1)) {
                 list.add(s.substring(i, j));
                 dfs(s, j);
                 list.remove(list.size() - 1);
@@ -32,22 +32,16 @@ public class PalindromePartitioning {
         }
     }
 
-    private boolean isPalindrome(String s, int from, int to) {
-        if (mem[from][to - 1] != 0) {
-            return mem[from][to - 1] == 1;
+    private boolean isPalindrome(String s, int i, int j) {
+        if (mem[i][j] != 0) {
+            return mem[i][j] == 1;
         }
-        int left = from, right = to - 1;
-        boolean res = true;
-        while (left < right) {
-            if (s.charAt(left) != s.charAt(right)) {
-                res = false;
-                break;
-            }
-            left++;
-            right--;
+        if (i >= j) {
+            mem[i][j] = 1;
+        } else if (s.charAt(i) == s.charAt(j)) {
+            mem[i][j] = isPalindrome(s, i + 1, j - 1) ? 1 : -1;
         }
-        mem[from][to - 1] = res ? 1 : -1;
-        return res;
+        return mem[i][j] == 1;
     }
 
     public static void main(String[] args) {
