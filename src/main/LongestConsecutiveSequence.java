@@ -1,5 +1,7 @@
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 最长连续序列：https://leetcode-cn.com/problems/longest-consecutive-sequence/
@@ -7,20 +9,24 @@ import java.util.Map;
 public class LongestConsecutiveSequence {
 
     public static int longestConsecutive(int[] nums) {
-        Map<Integer, Integer> map = new HashMap<>(nums.length);
-        int max = 0;
-        for (int i = 0; i < nums.length; i++) {
-            if (!map.containsKey(nums[i])) {
-                int prevLen = map.getOrDefault(nums[i] - 1, 0);
-                int nextLen = map.getOrDefault(nums[i] + 1, 0);
-                int currentLen = prevLen + nextLen + 1;
-                map.put(nums[i], currentLen);
-                map.put(nums[i] - prevLen, currentLen);
-                map.put(nums[i] + nextLen, currentLen);
-                max = Math.max(max, currentLen);
+        Set<Integer> numSet = new HashSet<>();
+        for (int num : nums) {
+            numSet.add(num);
+        }
+        int maxLen = 0;
+        for (int num : nums) {
+            // 只处理序列的起始数字
+            if (!numSet.contains(num - 1)) {
+                int currentNum = num;
+                int currentLen = 1;
+                while (numSet.contains(currentNum + 1)) {
+                    currentNum += 1;
+                    currentLen += 1;
+                }
+                maxLen = Math.max(maxLen, currentLen);
             }
         }
-        return max;
+        return maxLen;
     }
 
     public static void main(String[] args) {
