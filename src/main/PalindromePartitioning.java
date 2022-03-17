@@ -6,14 +6,19 @@ import java.util.List;
  */
 public class PalindromePartitioning {
 
-    public static List<List<String>> partition(String s) {
-        List<List<String>> result = new ArrayList<>();
-        List<String> list = new ArrayList<>();
-        dfs(s, 0, result, list);
+    List<List<String>> result;
+    List<String> list;
+    int[][] mem;
+
+    public List<List<String>> partition(String s) {
+        result = new ArrayList<>();
+        list = new ArrayList<>();
+        mem = new int[s.length()][s.length()];
+        dfs(s, 0);
         return result;
     }
 
-    private static void dfs(String s, int i, List<List<String>> result, List<String> list) {
+    private void dfs(String s, int i) {
         if (i == s.length()) {
             result.add(new ArrayList<>(list));
             return;
@@ -21,27 +26,33 @@ public class PalindromePartitioning {
         for (int j = i + 1; j <= s.length(); j++) {
             if (isPalindrome(s, i, j)) {
                 list.add(s.substring(i, j));
-                dfs(s, j, result, list);
+                dfs(s, j);
                 list.remove(list.size() - 1);
             }
         }
     }
 
-    private static boolean isPalindrome(String s, int from, int to) {
+    private boolean isPalindrome(String s, int from, int to) {
+        if (mem[from][to - 1] != 0) {
+            return mem[from][to - 1] == 1;
+        }
         int left = from, right = to - 1;
+        boolean res = true;
         while (left < right) {
             if (s.charAt(left) != s.charAt(right)) {
-                return false;
+                res = false;
+                break;
             }
             left++;
             right--;
         }
-        return true;
+        mem[from][to - 1] = res ? 1 : -1;
+        return res;
     }
 
     public static void main(String[] args) {
-        System.out.println(partition("aab"));
-        System.out.println(partition("a"));
+        System.out.println(new PalindromePartitioning().partition("aab"));
+        System.out.println(new PalindromePartitioning().partition("a"));
     }
 
 }
