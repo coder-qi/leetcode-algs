@@ -8,38 +8,28 @@ import java.util.Set;
  */
 public class WordBreak {
 
-    Set<String> wordSet;
-    int[] mem;
-    int minWordLen = Integer.MAX_VALUE;
-    int maxWordLen = Integer.MIN_VALUE;
-
     public boolean wordBreak(String s, List<String> wordDict) {
-        wordSet = new HashSet<>(wordDict);
+        Set<String> wordSet = new HashSet<>(wordDict);
+        int minWordLen = Integer.MAX_VALUE;
+        int maxWordLen = Integer.MIN_VALUE;
         for (String word : wordDict) {
             minWordLen = Math.min(minWordLen, word.length());
             maxWordLen = Math.max(maxWordLen, word.length());
         }
-        mem = new int[s.length()];
-        return backtrace(s, 0);
-    }
 
-    private boolean backtrace(String s, int begin) {
-        if (begin >= s.length()) {
-            return true;
-        }
-        if (mem[begin] != 0) {
-            return mem[begin] == 1;
-        }
-        for (int i = begin + minWordLen - 1, end = Math.min(i + maxWordLen, s.length()); i < end; i++) {
-            String word = s.substring(begin, i + 1);
-            if (wordSet.contains(word) && backtrace(s, i + 1)) {
-                mem[begin] = 1;
-                return true;
+        boolean[] dp = new boolean[s.length() + 1];
+        dp[0] = true;
+        for (int i = minWordLen; i <= s.length(); i++) {
+            for (int j = Math.max(0, i - maxWordLen); j <= i - minWordLen; j++) {
+                if (dp[j] && wordSet.contains(s.substring(j, i))) {
+                    dp[i] = true;
+                    break;
+                }
             }
         }
-        mem[begin] = -1;
-        return false;
+        return dp[s.length()];
     }
+
 
     public static void main(String[] args) {
         System.out.println(new WordBreak().wordBreak("leetcode", Arrays.asList("leet", "code")));
