@@ -26,6 +26,22 @@ public class ListNode {
         return head;
     }
 
+    public static ListNode ofCycle(int[] values, int pos) {
+        ListNode head = of(values);
+        if (pos >= 0 && pos < values.length) {
+            ListNode first = head;
+            for (int i = 0; i < pos; i++) {
+                first = first.next;
+            }
+            ListNode tail = first;
+            while (tail.next != null) {
+                tail = tail.next;
+            }
+            tail.next = first;
+        }
+        return head;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
