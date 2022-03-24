@@ -1,18 +1,17 @@
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * 环形链表：https://leetcode-cn.com/problems/linked-list-cycle/
  */
 public class LinkedListCycle {
 
     public static boolean hasCycle(ListNode head) {
-        Set<ListNode> nodes = new HashSet<>();
+        ListNode dummy = new ListNode(0);
         while (head != null) {
-            if (!nodes.add(head)) {
+            if (head.next == dummy) {
                 return true;
             }
+            ListNode node = head;
             head = head.next;
+            node.next = dummy;
         }
         return false;
     }
