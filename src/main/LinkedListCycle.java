@@ -4,14 +4,16 @@
 public class LinkedListCycle {
 
     public static boolean hasCycle(ListNode head) {
-        ListNode dummy = new ListNode(0);
-        while (head != null) {
-            if (head.next == dummy) {
+        if (head == null || head.next == null) {
+            return false;
+        }
+        ListNode slow = head, fast = head.next;
+        while (fast != null && fast.next != null) {
+            if (fast == slow) {
                 return true;
             }
-            ListNode node = head;
-            head = head.next;
-            node.next = dummy;
+            slow = slow.next;
+            fast = fast.next.next;
         }
         return false;
     }
