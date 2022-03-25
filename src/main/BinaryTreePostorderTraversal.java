@@ -1,4 +1,5 @@
-import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -7,22 +8,25 @@ import java.util.List;
 public class BinaryTreePostorderTraversal {
 
     public static List<Integer> postorderTraversal(TreeNode root) {
-        List<Integer> result = new ArrayList<>();
-        dfs(root, result);
-        return result;
-    }
+        LinkedList<Integer> result = new LinkedList<>();
+        Deque<TreeNode> stack = new LinkedList<>();
 
-    private static void dfs(TreeNode root, List<Integer> result) {
-        if (root == null) {
-            return;
+        while (!stack.isEmpty() || root != null) {
+            while (root != null) {
+                stack.push(root);
+                result.addFirst(root.val);
+                root = root.right;
+            }
+            root = stack.pop();
+            root = root.left;
         }
-        dfs(root.left, result);
-        dfs(root.right, result);
-        result.add(root.val);
+
+        return result;
     }
 
     public static void main(String[] args) {
         System.out.println(postorderTraversal(TreeNode.of(1,null,2,3)));
+        System.out.println(postorderTraversal(TreeNode.of(1,11,2,3,4,null,null,5,6)));
     }
 
 }
