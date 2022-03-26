@@ -1,4 +1,3 @@
-import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,19 +8,46 @@ public class BinaryTreePostorderTraversal {
 
     public static List<Integer> postorderTraversal(TreeNode root) {
         LinkedList<Integer> result = new LinkedList<>();
-        Deque<TreeNode> stack = new LinkedList<>();
 
-        while (!stack.isEmpty() || root != null) {
-            while (root != null) {
-                stack.push(root);
-                result.addFirst(root.val);
+        TreeNode p = null, r = root;
+        while (root != null) {
+            if (root.left != null) {
+                p = root.left;
+                while (p.right != null && p.right != root) {
+                    p = p.right;
+                }
+                if (p.right == null) {
+                    p.right = root;
+                    root = root.left;
+                } else {
+                    p.right = null;
+                    addPath(result, root.left);
+                    root = root.right;
+                }
+            } else {
                 root = root.right;
             }
-            root = stack.pop();
-            root = root.left;
         }
 
+        addPath(result, r);
         return result;
+    }
+
+    private static void addPath(LinkedList<Integer> result, TreeNode node) {
+        int count = 0;
+        while (node != null) {
+            result.add(node.val);
+            node = node.right;
+            count++;
+        }
+        int left = result.size() - count, right = result.size() - 1;
+        while (left < right) {
+            int t = result.get(left);
+            result.set(left, result.get(right));
+            result.set(right, t);
+            left++;
+            right--;
+        }
     }
 
     public static void main(String[] args) {
