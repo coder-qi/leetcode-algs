@@ -10,21 +10,28 @@ public class BinaryTreePreorderTraversal {
 
     public static List<Integer> preorderTraversal(TreeNode root) {
         List<Integer> result = new ArrayList<>();
-        if (root == null) {
-            return result;
-        }
-        Deque<TreeNode> stack = new LinkedList<>();
-        stack.push(root);
-        while (!stack.isEmpty()) {
-            TreeNode x = stack.pop();
-            result.add(x.val);
-            if (x.right != null) {
-                stack.push(x.right);
+
+        TreeNode predecessor = null;
+        while (root != null) {
+            if (root.left != null) {
+                predecessor = root.left;
+                while (predecessor.right != null && predecessor.right != root) {
+                    predecessor = predecessor.right;
+                }
+                if (predecessor.right == null) {
+                    result.add(root.val);
+                    predecessor.right = root;
+                    root = root.left;
+                } else {
+                    predecessor.right = null;
+                    root = root.right;
+                }
+            } else {
+                result.add(root.val);
+                root = root.right;
             }
-            if (x.left != null) {
-                stack.push(x.left);
-            }
         }
+
         return result;
     }
 
