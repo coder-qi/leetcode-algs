@@ -16,8 +16,27 @@ public class SortList {
             var first = dummy;
             while (cur != null) {
                 var left = cur;
-                var right = unlink(left, step);
-                cur = unlink(right, step);
+
+                var slow = left;
+                var fast = left.next;
+                for (int i = 0; i < step - 1; i++) {
+                    if (slow != null) {
+                        slow = slow.next;
+                    }
+                    if (fast != null && fast.next != null) {
+                        fast = fast.next.next;
+                    }
+                }
+                var right = slow != null ? slow.next : null;
+                if (slow != null) {
+                    slow.next = null;
+                }
+                if (fast == null || fast.next == null) {
+                    cur = null;
+                } else {
+                    cur = fast.next;
+                    fast.next = null;
+                }
 
                 first.next = merge(left, right);
                 while (first.next != null) {
@@ -43,19 +62,6 @@ public class SortList {
         }
         p.next = left != null ? left : right;
         return dummy.next;
-    }
-
-    private static ListNode unlink(ListNode x, int n) {
-        while (x != null && n > 1) {
-            x = x.next;
-            n--;
-        }
-        if (x != null) {
-            var next = x.next;
-            x.next = null;
-            return next;
-        }
-        return null;
     }
 
     public static void main(String[] args) {
