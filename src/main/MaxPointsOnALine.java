@@ -1,8 +1,5 @@
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
 
 /**
  * 直线上最多的点数：https://leetcode-cn.com/problems/max-points-on-a-line/
@@ -11,59 +8,46 @@ public class MaxPointsOnALine {
 
     public static int maxPoints(int[][] points) {
         int n = points.length;
-        Map<F, Set<Integer>> map = new HashMap<>();
-        int result = 1;
+        if (n <= 2) {
+            return n;
+        }
+        int result = 0;
         for (int i = 0; i < n; i++) {
-            for (int j = i + 1; j < n; j++) {
-                double dx = points[j][0] - points[i][0];
-                double dy = points[j][1] - points[i][1];
-                F f = new F();
-                if (dx == 0) {
-                    f.kx = (double) points[i][0];
-                } else if (dy == 0) {
-                    f.ky = (double) points[i][1];
-                } else {
-                    f.k = dy / dx;
-                    f.b = f.k * points[j][0] - points[j][1];
-                }
-                Set<Integer> s = map.get(f);
-                if (s == null) {
-                    s = new HashSet<>();
-                    map.put(f, s);
-                }
-                s.add(i);
-                s.add(j);
-                result = Math.max(result, s.size());
+            if (result >= n - i || result > n / 2) {
+                break;
             }
+            Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+            for (int j = i + 1; j < n; j++) {
+                int x = points[j][0] - points[i][0];
+                int y = points[j][1] - points[i][1];
+                if (x == 0) {
+                    y = 1;
+                } else if (y == 0) {
+                    x = 1;
+                } else {
+                    if (y < 0) {
+                        x = -x;
+                        y = -y;
+                    }
+                    int gcdXY = gcd(Math.abs(x), Math.abs(y));
+                    x /= gcdXY;
+                    y /= gcdXY;
+                }
+                int key = y + 20001 * x;
+                map.put(key, map.getOrDefault(key, 0) + 1);
+            }
+            int maxn = 0;
+            for (Map.Entry<Integer, Integer> entry: map.entrySet()) {
+                int num = entry.getValue();
+                maxn = Math.max(maxn, num + 1);
+            }
+            result = Math.max(result, maxn);
         }
         return result;
     }
 
-    static class F {
-        double k;
-        double b;
-        Double kx;
-        Double ky;
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-            F f = (F) o;
-            return Double.compare(f.k, k) == 0 &&
-                Double.compare(f.b, b) == 0 &&
-                Objects.equals(kx, f.kx) &&
-                Objects.equals(ky, f.ky);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(k, b, kx, ky);
-        }
+    private static int gcd(int a, int b) {
+        return b != 0 ? gcd(b, a % b) : a;
     }
 
     public static void main(String[] args) {
