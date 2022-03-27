@@ -1,28 +1,61 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 /**
  * 排序链表：https://leetcode-cn.com/problems/sort-list/
  */
 public class SortList {
 
     public static ListNode sortList(ListNode head) {
-        if (head == null) {
-            return null;
+        var dummy = new ListNode(0, head);
+        var len = 0;
+        var p = head;
+        while (p != null) {
+            p = p.next;
+            len++;
         }
-        List<ListNode> list = new ArrayList<>();
-        while (head != null) {
-            list.add(head);
-            head = head.next;
+        for (var step = 1; step < len; step <<= 1) {
+            var cur = dummy.next;
+            var first = dummy;
+            while (cur != null) {
+                var left = cur;
+                var right = unlink(left, step);
+                cur = unlink(right, step);
+
+                first.next = merge(left, right);
+                while (first.next != null) {
+                    first = first.next;
+                }
+            }
         }
-        Collections.sort(list, Comparator.comparingInt(n -> n.val));
-        for (int i = 0; i < list.size() - 1; i++) {
-            list.get(i).next = list.get(i + 1);
+        return dummy.next;
+    }
+
+    private static ListNode merge(ListNode left, ListNode right) {
+        var dummy = new ListNode();
+        var p = dummy;
+        while (left != null && right != null) {
+            if (left.val < right.val) {
+                p.next = left;
+                left = left.next;
+            } else {
+                p.next = right;
+                right = right.next;
+            }
+            p = p.next;
         }
-        list.get(list.size() - 1).next = null;
-        return list.get(0);
+        p.next = left != null ? left : right;
+        return dummy.next;
+    }
+
+    private static ListNode unlink(ListNode x, int n) {
+        while (x != null && n > 1) {
+            x = x.next;
+            n--;
+        }
+        if (x != null) {
+            var next = x.next;
+            x.next = null;
+            return next;
+        }
+        return null;
     }
 
     public static void main(String[] args) {
