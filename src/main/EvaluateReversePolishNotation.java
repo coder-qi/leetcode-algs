@@ -1,11 +1,7 @@
 import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 /**
  * 逆波兰表达式求值：https://leetcode-cn.com/problems/evaluate-reverse-polish-notation/
@@ -20,18 +16,18 @@ public class EvaluateReversePolishNotation {
     );
 
     public static int evalRPN(String[] tokens) {
-        Deque<String> stack = new LinkedList<>();
+        Deque<Integer> stack = new LinkedList<>();
         for (String token : tokens) {
-            BiFunction f = operators.get(token);
+            BiFunction<Integer, Integer, Integer> f = operators.get(token);
             if (f != null) {
-                int y = Integer.valueOf(stack.pop());
-                int x = Integer.valueOf(stack.pop());
-                stack.push(String.valueOf(f.apply(x, y)));
+                int y = stack.pop();
+                int x = stack.pop();
+                stack.push(f.apply(x, y));
             } else {
-                stack.push(token);
+                stack.push(Integer.valueOf(token));
             }
         }
-        return Integer.valueOf(stack.pop());
+        return stack.pop();
     }
 
     public static void main(String[] args) {
