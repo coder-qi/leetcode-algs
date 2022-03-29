@@ -4,15 +4,12 @@
 public class MaximumProductSubarray {
 
     public static int maxProduct(int[] nums) {
-        int result = nums[0], a = 1;
-        for (int i = 0; i < nums.length; i++) {
-            a = a != 0 ? a * nums[i] : nums[i];
-            result = Math.max(result, a);
-        }
-        a = 1;
-        for (int i = nums.length - 1; i >= 0; i--) {
-            a = a != 0 ? a * nums[i] : nums[i];
-            result = Math.max(result, a);
+        int result = nums[0], maxF = nums[0], minF = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            int max = maxF, min = minF;
+            maxF = Math.max(max * nums[i], Math.max(min * nums[i], nums[i]));
+            minF = Math.min(min * nums[i], Math.min(max * nums[i], nums[i]));
+            result = Math.max(result, maxF);
         }
         return result;
     }
