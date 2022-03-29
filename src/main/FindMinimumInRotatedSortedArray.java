@@ -8,12 +8,12 @@ public class FindMinimumInRotatedSortedArray {
     }
 
     private static int findMinIndex(int[] nums, int left, int right) {
-        if (right - left <= 1) {
-            return left == right || nums[left] < nums[right] ? left : right;
+        if (left == right) {
+            return left;
         }
         int mid = (left + right) >> 1;
-        if (nums[left] > nums[mid]) {
-            return findMinIndex(nums, mid, right);
+        if (nums[mid] > nums[right]) {
+            return findMinIndex(nums, mid + 1, right);
         } else {
             return findMinIndex(nums, left, mid);
         }
