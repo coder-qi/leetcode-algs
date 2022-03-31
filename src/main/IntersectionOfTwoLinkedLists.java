@@ -1,24 +1,28 @@
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * 相交链表：https://leetcode-cn.com/problems/intersection-of-two-linked-lists/
  */
 public class IntersectionOfTwoLinkedLists {
 
     public static ListNode getIntersectionNode(ListNode headA, ListNode headB) {
-        Set<ListNode> nodes = new HashSet<>();
-        while (headA != null) {
-            nodes.add(headA);
-            headA = headA.next;
+        ListNode curA = headA;
+        while (curA != null) {
+            curA.val += 100001;
+            curA = curA.next;
         }
+        ListNode result = null;
         while (headB != null) {
-            if (!nodes.add(headB)) {
-                return headB;
+            if (headB.val > 100001) {
+                result = headB;
+                break;
             }
             headB = headB.next;
         }
-        return null;
+
+        while (headA != null) {
+            headA.val -= 100001;
+            headA = headA.next;
+        }
+        return result;
     }
 
     public static void main(String[] args) {
