@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 /**
  * 最大间距：https://leetcode-cn.com/problems/maximum-gap/
  */
@@ -10,35 +8,34 @@ public class MaximumGap {
         if (n <= 1) {
             return 0;
         }
-        int max = Integer.MIN_VALUE, min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
         for (int i = 0; i < n; i++) {
             max = Math.max(max, nums[i]);
-            min = Math.min(min, nums[i]);
         }
 
-        int d = Math.max((max - min) / (n - 1), 1), bucketSize = (max - min) / d + 1;
-        int[][] buckets = new int[bucketSize][2];
-        for (int i = 0; i < bucketSize; i++) {
-            Arrays.fill(buckets[i], -1);
-        }
-        for (int i = 0; i < n; i++) {
-            int index = (nums[i] - min) / d;
-            if (buckets[index][0] == -1) {
-                buckets[index][0] = buckets[index][1] = nums[i];
-            } else {
-                buckets[index][0] = Math.min(buckets[index][0], nums[i]);
-                buckets[index][1] = Math.max(buckets[index][1], nums[i]);
+        long exp = 1;
+        int[] buf = new int[n];
+        while (max >= exp) {
+            int[] cnt = new int[10];
+            for (int i = 0; i < n; i++) {
+                int digit = ((nums[i] / (int) exp) % 10);
+                cnt[digit]++;
             }
+            for (int i = 1; i < 10; i++) {
+                cnt[i] += cnt[i - 1];
+            }
+            for (int i = n - 1; i >=0; i--) {
+                int digit = ((nums[i] / (int) exp) % 10);
+                buf[cnt[digit] - 1] = nums[i];
+                cnt[digit]--;
+            }
+            System.arraycopy(buf, 0, nums, 0, n);
+            exp *= 10;
         }
+
         int result = 0;
-        for (int i = 0, prev = -1; i < bucketSize; i++) {
-            if (buckets[i][0] == -1) {
-                continue;
-            }
-            if (prev != -1) {
-                result = Math.max(result, buckets[i][0] - buckets[prev][1]);
-            }
-            prev = i;
+        for (int i = 1; i < n; i++) {
+            result = Math.max(result, nums[i] - nums[i - 1]);
         }
         return result;
     }
