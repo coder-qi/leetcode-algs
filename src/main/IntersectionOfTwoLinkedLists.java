@@ -4,25 +4,16 @@
 public class IntersectionOfTwoLinkedLists {
 
     public static ListNode getIntersectionNode(ListNode headA, ListNode headB) {
-        ListNode curA = headA;
-        while (curA != null) {
-            curA.val += 100001;
-            curA = curA.next;
+        if (headA == null || headB == null) {
+            return null;
         }
-        ListNode result = null;
-        while (headB != null) {
-            if (headB.val > 100001) {
-                result = headB;
-                break;
-            }
-            headB = headB.next;
+        ListNode pA = headA, pB = headB;
+        while (pA != pB) {
+            pA = pA != null ? pA.next : headB;
+            pB = pB != null ? pB.next : headA;
         }
 
-        while (headA != null) {
-            headA.val -= 100001;
-            headA = headA.next;
-        }
-        return result;
+        return pA;
     }
 
     public static void main(String[] args) {
