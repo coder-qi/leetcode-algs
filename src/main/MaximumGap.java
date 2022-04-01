@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Arrays;
 
 /**
  * 最大间距：https://leetcode-cn.com/problems/maximum-gap/
@@ -17,29 +15,30 @@ public class MaximumGap {
             max = Math.max(max, nums[i]);
             min = Math.min(min, nums[i]);
         }
-        int bucketNum = n, d = Math.max(max - min, 1);
-        List<Integer>[] buckets = new List[bucketNum];
+
+        int d = Math.max((max - min) / (n - 1), 1), bucketSize = (max - min) / d + 1;
+        int[][] buckets = new int[bucketSize][2];
+        for (int i = 0; i < bucketSize; i++) {
+            Arrays.fill(buckets[i], -1);
+        }
         for (int i = 0; i < n; i++) {
-            int index = (int) ((nums[i] - min) * ((long)(bucketNum - 1)) / d);
-            if (buckets[index] == null) {
-                buckets[index] = new ArrayList<>();
-            }
-            buckets[index].add(nums[i]);
-        }
-        for (int i = 0; i < bucketNum; i++) {
-            if (buckets[i] != null) {
-                Collections.sort(buckets[i]);
+            int index = (nums[i] - min) / d;
+            if (buckets[index][0] == -1) {
+                buckets[index][0] = buckets[index][1] = nums[i];
+            } else {
+                buckets[index][0] = Math.min(buckets[index][0], nums[i]);
+                buckets[index][1] = Math.max(buckets[index][1], nums[i]);
             }
         }
-        int result = 0, preNum = Integer.MAX_VALUE;
-        for (int i = 0; i < bucketNum; i++) {
-            List<Integer> bucket = buckets[i];
-            if (bucket != null) {
-                for (int num : bucket) {
-                    result = Math.max(result, num - preNum);
-                    preNum = num;
-                }
+        int result = 0;
+        for (int i = 0, prev = -1; i < bucketSize; i++) {
+            if (buckets[i][0] == -1) {
+                continue;
             }
+            if (prev != -1) {
+                result = Math.max(result, buckets[i][0] - buckets[prev][1]);
+            }
+            prev = i;
         }
         return result;
     }
