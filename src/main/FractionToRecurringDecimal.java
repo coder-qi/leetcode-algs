@@ -1,5 +1,4 @@
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -16,39 +15,28 @@ public class FractionToRecurringDecimal {
         n = Math.abs(n);
         d = Math.abs(d);
         result.append(n / d);
-        long remainder = Math.abs(n % d);
-        if (remainder != 0) {
-            result.append('.');
+        long remainder = n % d;
+        if (remainder == 0) {
+            return result.toString();
         }
+        result.append('.');
 
-        Map<Long, Long> map = new HashMap<>();
-        Map<Long, StringBuilder> map2 = new LinkedHashMap<>();
-        long prev = -1;
-        while (remainder != 0) {
-            if (map2.containsKey(remainder)) {
-                map2.get(remainder).insert(0, '(');
-                long cur = remainder;
-                while (map.containsKey(cur)) {
-                    cur = map.get(cur);
-                }
-                map2.get(cur).append(')');
-                break;
-            }
-            StringBuilder sb = new StringBuilder();
-            map2.put(remainder, sb);
-            map.put(prev, remainder);
-            prev = remainder;
+        StringBuilder factionPart = new StringBuilder();
+        Map<Long, Integer> remainderIndexMap  = new HashMap<>();
+        int index = 0;
+        while (remainder != 0 && !remainderIndexMap.containsKey(remainder)) {
+            remainderIndexMap.put(remainder, index);
             remainder *= 10;
-            while (remainder < d) {
-                remainder *= 10;
-                sb.append('0');
-            }
-            sb.append(remainder / d);
+            factionPart.append(remainder / d);
             remainder %= d;
+            index++;
         }
-        for (StringBuilder sb : map2.values()) {
-            result.append(sb);
+        if (remainder != 0) {
+            int insertIndex = remainderIndexMap.get(remainder);
+            factionPart.insert(insertIndex, '(');
+            factionPart.append(')');
         }
+        result.append(factionPart);
         return result.toString();
     }
 
