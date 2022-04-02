@@ -7,24 +7,14 @@ public class TwoSumIIInputArrayIsSorted {
 
     public static int[] twoSum(int[] numbers, int target) {
         int n = numbers.length;
-        for (int i = 0; i < n; i++) {
-            if (i > 0 && numbers[i] == numbers[i - 1]) {
-                continue;
-            }
-            int val = target - numbers[i];
-            if (val > numbers[n - 1] || val < numbers[i]) {
-                continue;
-            }
-            int left = i + 1, right = n - 1;
-            while (left <= right) {
-                int mid = (left + right) >> 1;
-                if (numbers[mid] == val) {
-                    return new int[] {i + 1, mid + 1};
-                } else if (val > numbers[mid]) {
-                    left = mid + 1;
-                } else {
-                    right = mid - 1;
-                }
+        for (int i = 0, j = n - 1; i < n && j >= 0;) {
+            int sum = numbers[i] + numbers[j];
+            if (sum == target) {
+                return new int[] {i + 1, j + 1};
+            } else if (sum > target) {
+                j--;
+            } else {
+                i++;
             }
         }
         return null;
