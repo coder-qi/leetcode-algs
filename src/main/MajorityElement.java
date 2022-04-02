@@ -1,6 +1,3 @@
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * 多数元素：https://leetcode-cn.com/problems/majority-element/
  */
@@ -8,19 +5,18 @@ public class MajorityElement {
 
     public static int majorityElement(int[] nums) {
         int n = nums.length;
-        Map<Integer, Integer> map = new HashMap<>();
-        for (int i = 0; i < n; i++) {
-            Integer cnt = map.get(nums[i]);
-            if (cnt == null) {
-                cnt = 0;
+        int result = nums[0], count = 1;
+        for (int i = 1; i < n; i++) {
+            if (nums[i] == result) {
+                count++;
+            } else {
+                count--;
+                if (count == 0) {
+                    result = nums[i + 1];
+                }
             }
-            cnt += 1;
-            if (cnt > (n >> 1)) {
-                return nums[i];
-            }
-            map.put(nums[i], cnt);
         }
-        return 0;
+        return result;
     }
 
     public static void main(String[] args) {
