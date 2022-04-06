@@ -11,18 +11,26 @@ public class LargestNumber {
         for (int i = 0; i < n; i++) {
             strs[i] = Integer.toString(nums[i]);
         }
-        Arrays.sort(strs, (s1, s2) -> (s2 + s1).compareTo(s1 + s2));
-        /*Arrays.sort(strs, new Comparator<String>() {
-            @Override
-            public int compare(String s1, String s2) {
-                return (s2 + s1).compareTo(s1 + s2);
-            }
-        });*/
-        String result = String.join("", strs).replaceAll("^0+", "");
-        if (result.isEmpty()) {
+        Arrays.sort(strs, this::compareStr);
+        if("0".equals(strs[0])) {
             return "0";
         }
-        return result;
+        return String.join("", strs);
+    }
+
+    private int compareStr(String s1, String s2) {
+        int i = 0, j = 0;
+        while (i < s1.length() || j < s2.length()) {
+            i = i % s1.length();
+            j = j % s2.length();
+            char c1 = s1.charAt(i), c2 = s2.charAt(j);
+            if (c1 != c2) {
+                return c1 > c2 ? -1 : 1;
+            }
+            i++;
+            j++;
+        }
+        return s1.length() > s2.length() ? -1 : 0;
     }
 
     public static void main(String[] args) {
