@@ -11,11 +11,24 @@ public class RotateArray {
         if (k == 0) {
             return;
         }
-        int[] temp = new int[n];
-        for (int i = 0; i < n; i++) {
-            temp[(i + k) % n] = nums[i];
+        int[] temp = new int[k];
+        // 交换0 ~ k
+        for (int i = 0; i < k; i++) {
+            temp[i] = nums[(i + k) % n];
+            nums[(i + k) % n] = nums[i];
         }
-        System.arraycopy(temp, 0, nums, 0, n);
+        // k ~ n
+        for (int i = k; i < n; i++) {
+            int t = nums[(i + k) % n];
+            nums[(i + k) % n] = temp[i % k];
+            temp[i % k] = t;
+        }
+    }
+
+    private static void swap(int[] nums, int i, int j) {
+        int t = nums[i];
+        nums[i] = nums[j];
+        nums[j] = t;
     }
 
     public static void main(String[] args) {
