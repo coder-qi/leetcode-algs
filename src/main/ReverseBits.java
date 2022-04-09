@@ -5,17 +5,9 @@ public class ReverseBits {
 
     public static int reverseBits(int n) {
         int result = 0;
-        boolean positive = n > 0;
-        if (positive) {
-            n |= 0x80000000;
-        }
-        while (n != 0) {
-            result <<= 1;
-            result |= 1 & n;
+        for (int i = 0; i < 32 & n != 0; i++) {
+            result |= (1 & n) << (31 - i);
             n >>>= 1;
-        }
-        if (positive) {
-            result &= 0xfffffffe;
         }
         return result;
     }
