@@ -6,25 +6,24 @@ import java.util.Arrays;
 public class RotateArray {
 
     public static void rotate(int[] nums, int k) {
-        int n = nums.length, left = 0;
-        while (left < n) {
-            int len = n - left;
-            k = k % len;
-            if (k == 0) {
-                break;
-            }
-            for (int i = left, end = left + len - len % k; i < end; i++) {
-                swap(nums, i, left + (i - left) % k + len - k);
-            }
-            left += len - len % k;
-            k = len % k == 0 ? 0 : k % (len % k);
+        int n = nums.length;
+        k = k % n;
+        int count = gcd(k, n);
+        for (int start = 0; start < count; start++) {
+            int current = start;
+            int prev = nums[start];
+            do {
+                int next = (current + k) % n;
+                int t = nums[next];
+                nums[next] = prev;
+                prev = t;
+                current = next;
+            } while (start != current);
         }
     }
 
-    private static void swap(int[] nums, int i, int j) {
-        int t = nums[i];
-        nums[i] = nums[j];
-        nums[j] = t;
+    private static int gcd(int x, int y) {
+        return y > 0 ? gcd(y, x % y) : x;
     }
 
     public static void main(String[] args) {
