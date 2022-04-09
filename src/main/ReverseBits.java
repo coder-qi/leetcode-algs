@@ -4,13 +4,20 @@
 public class ReverseBits {
 
     public static int reverseBits(int n) {
-        String str = Integer.toBinaryString(n);
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 32 - str.length(); i++) {
-            sb.append('0');
+        int result = 0;
+        boolean positive = n > 0;
+        if (positive) {
+            n |= 0x80000000;
         }
-        sb.append(str).reverse();
-        return Integer.parseUnsignedInt(sb.toString(), 2);
+        while (n != 0) {
+            result <<= 1;
+            result |= 1 & n;
+            n >>>= 1;
+        }
+        if (positive) {
+            result &= 0xfffffffe;
+        }
+        return result;
     }
 
     public static void main(String[] args) {
