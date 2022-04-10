@@ -1,43 +1,49 @@
 package weekly.w288;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Comparator;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 /**
  * 按奇偶性交换后的最大数字：https://leetcode-cn.com/contest/weekly-contest-288/problems/largest-number-after-digit-swaps-by-parity/
+ * https://leetcode-cn.com/problems/largest-number-after-digit-swaps-by-parity/
  */
 public class LargestNumberAfterDigitSwapsByParity {
 
     public static int largestInteger(int num) {
-        String str = Integer.toString(num);
-        List<Integer> odd = new ArrayList<>();
-        List<Integer> even = new ArrayList<>();
-        for (int i = 0; i < str.length(); i++) {
-            char c = str.charAt(i);
-            if ((c - '0') % 2 == 0) {
-                even.add(c - '0');
+        Comparator<Integer> comparator = Integer::compareTo;
+        comparator = comparator.reversed();
+        Queue<Integer> odd = new PriorityQueue<>(comparator);
+        Queue<Integer> even = new PriorityQueue<>(comparator);
+        int t = num;
+        while (t != 0) {
+            int v = t % 10;
+            if (v % 2 == 0) {
+                even.offer(v);
             } else {
-                odd.add(c - '0');
+                odd.offer(v);
             }
+            t /= 10;
         }
-        Collections.sort(odd, (v1, v2) -> v2 - v1);
-        Collections.sort(even, (v1, v2) -> v2 - v1);
-        StringBuilder result = new StringBuilder();
-        for (int i = 0, o = 0, e = 0; i < str.length(); i++) {
-            char c = str.charAt(i);
-            if ((c - '0') % 2 == 0) {
-                result.append(even.get(e++));
+        int result = 0, mask = (int) Math.pow(10, odd.size() + even.size() - 1);
+        t = num;
+        while (!even.isEmpty() || !odd.isEmpty()) {
+            int v = t / mask;
+            if (v % 2 == 0) {
+                result = result * 10 + even.poll();
             } else {
-                result.append(odd.get(o++));
+                result = result * 10 + odd.poll();
             }
+            t %= mask;
+            mask /= 10;
         }
-        return Integer.valueOf(result.toString());
+        return result;
     }
 
     public static void main(String[] args) {
         System.out.println(largestInteger(1234));
         System.out.println(largestInteger(65875));
+        System.out.println(largestInteger(60));
     }
 
 }
