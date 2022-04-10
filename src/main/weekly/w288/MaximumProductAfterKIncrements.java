@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 /**
  * K 次增加后的最大乘积:https://leetcode-cn.com/contest/weekly-contest-288/problems/maximum-product-after-k-increments/
+ * https://leetcode-cn.com/problems/maximum-product-after-k-increments/
  */
 public class MaximumProductAfterKIncrements {
 
