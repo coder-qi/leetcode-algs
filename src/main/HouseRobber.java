@@ -8,13 +8,13 @@ public class HouseRobber {
         if (n <= 1) {
             return n == 0 ? 0 : nums[0];
         }
-        int[] dp = new int[n];
-        dp[0] = nums[0];
-        dp[1] = Integer.max(nums[0], nums[1]);
+        int first = nums[0], second = Integer.max(nums[0], nums[1]);
         for (int i = 2; i < n; i++) {
-            dp[i] = Integer.max(dp[i - 2] + nums[i], dp[i - 1]);
+            int t = second;
+            second = Integer.max(first + nums[i], second);
+            first = t;
         }
-        return dp[n - 1];
+        return second;
     }
 
     public static void main(String[] args) {
