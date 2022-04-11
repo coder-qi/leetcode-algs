@@ -1,6 +1,4 @@
 import java.util.ArrayList;
-import java.util.Deque;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -10,27 +8,19 @@ public class BinaryTreeRightSideView {
 
     public static List<Integer> rightSideView(TreeNode root) {
         List<Integer> result = new ArrayList<>();
-        if (root == null) {
-            return result;
-        }
-        Deque<TreeNode> q = new LinkedList<>();
-        q.offer(root);
-        while (!q.isEmpty()) {
-            int size = q.size();
-            for (int i = 0; i < size; i++) {
-                TreeNode x = q.poll();
-                if (i == 0) {
-                    result.add(x.val);
-                }
-                if (x.right != null) {
-                    q.offer(x.right);
-                }
-                if (x.left != null) {
-                    q.offer(x.left);
-                }
-            }
-        }
+        dfs(root, 0, result);
         return result;
+    }
+
+    private static void dfs(TreeNode root, int level, List<Integer> result) {
+        if (root == null) {
+            return;
+        }
+        if (result.size() == level) {
+            result.add(root.val);
+        }
+        dfs(root.right, level + 1, result);
+        dfs(root.left, level + 1, result);
     }
 
     public static void main(String[] args) {
