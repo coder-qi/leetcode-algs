@@ -3,36 +3,79 @@
  */
 public class NumberOfIslands {
 
-    int m, n;
-    char[][] grid;
-
     public int numIslands(char[][] grid) {
-        m = grid.length;
-        n = grid[0].length;
-        this.grid = grid;
+        int m = grid.length, n = grid[0].length;
 
-        int result = 0;
+        UnionFind uf = new UnionFind(grid);
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 if (grid[i][j] == '1') {
-                    result++;
-                    visit(i, j);
+                    grid[i][j] = '0';
+                    if (i - 1 >= 0 && grid[i - 1][j] == '1') {
+                        uf.union(i * n + j, (i - 1) * n + j);
+                    }
+                    if (i + 1 < m && grid[i + 1][j] == '1') {
+                        uf.union(i * n + j, (i + 1) * n + j);
+                    }
+                    if (j - 1 >= 0 && grid[i][j - 1] == '1') {
+                        uf.union(i * n + j, i * n + j - 1);
+                    }
+                    if (j + 1 < n && grid[i][j + 1] == '1') {
+                        uf.union(i * n + j, i * n + j + 1);
+                    }
                 }
             }
         }
-        return result;
+        return uf.getCount();
     }
 
-    private void visit(int row, int column) {
-        if (row >= m || column >= n || row < 0 || column < 0
-                || grid[row][column] == '0') {
-            return;
+    static class UnionFind {
+        int count;
+        int[] parent;
+        int[] rank;
+
+        public UnionFind(char[][] grid) {
+            int m = grid.length, n = grid[0].length;
+            parent = new int[m * n];
+            rank = new int[m * n];
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (grid[i][j] == '1') {
+                        parent[i * n + j] = i * n + j;
+                        count++;
+                    }
+                }
+            }
         }
-        grid[row][column] = '0';
-        visit(row - 1, column);
-        visit(row + 1, column);
-        visit(row, column - 1);
-        visit(row, column + 1);
+
+        public int find(int i) {
+            if (parent[i] != i) {
+                parent[i] = find(parent[i]);
+            }
+            return parent[i];
+        }
+
+        public void union(int x, int y) {
+            int rootX = find(x);
+            int rootY = find(y);
+            if (rootX != rootY) {
+                if (rank[rootX] > rank[rootY]) {
+                    parent[rootY] = rootX;
+                    rank[rootX] += rank[rootY];
+                } else if (rank[rootX] < rank[rootY]) {
+                    parent[rootX] = rootY;
+                    rank[rootY] += rank[rootX];
+                } else {
+                    parent[rootY] = rootX;
+                    rank[rootX]++;
+                }
+                count--;
+            }
+        }
+
+        public int getCount() {
+            return count;
+        }
     }
 
     public static void main(String[] args) {
