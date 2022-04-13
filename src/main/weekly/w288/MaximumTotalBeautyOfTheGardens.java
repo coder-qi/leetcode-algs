@@ -23,26 +23,25 @@ public class MaximumTotalBeautyOfTheGardens {
             if (flowers[i] >= target) {
                 continue;
             }
-            long lv = flowers[0], rv = target - 1;
-            while (lv < rv) {
-                long mv = (rv - lv + 1) / 2 + lv;
-                int l = 0, r = i;
-                while (l < r) {
-                    int mid = (l + r + 1) >> 1;
-                    if (flowers[mid] < mv) {
-                        l = mid;
-                    } else {
-                        r = mid - 1;
+            long m = 0;
+            int left = 0, right = i;
+            while (left <= right) {
+                int mid = (left + right) >> 1;
+                long diff = flowers[mid] * (long)(mid + 1) - sum[mid];
+                if (diff > newFlowers) {
+                    right = mid - 1;
+                } else if (diff < newFlowers) {
+                    long c = (newFlowers + sum[mid]) / (mid + 1);
+                    if (c >= flowers[mid]) {
+                        m = Math.min(c, mid + 1 >= i + 1 ? target - 1 : flowers[mid + 1] - 1);
                     }
-                }
-                long diff = mv * (l + 1) - sum[l];
-                if (newFlowers >= diff) {
-                    lv = mv;
+                    left = mid + 1;
                 } else {
-                    rv = mv - 1;
+                    m = flowers[mid];
+                    break;
                 }
             }
-            result = Math.max(result, (n - i - 1) * (long)full + lv * partial);
+            result = Math.max(result, (n - i - 1) * (long)full + m * partial);
             newFlowers -= target - flowers[i];
             if (newFlowers < 0) {
                 break;
