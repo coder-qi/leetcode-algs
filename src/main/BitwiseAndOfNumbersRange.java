@@ -4,13 +4,10 @@
 public class BitwiseAndOfNumbersRange {
 
     public static int rangeBitwiseAnd(int left, int right) {
-        int shift = 0;
         while (left < right) {
-            left >>= 1;
-            right >>= 1;
-            shift++;
+            right &= (right - 1);
         }
-        return left << shift;
+        return right;
     }
 
     public static void main(String[] args) {
