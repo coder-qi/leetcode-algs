@@ -4,16 +4,14 @@
 public class RemoveLinkedListElements {
 
     public static ListNode removeElements(ListNode head, int val) {
-        ListNode dummy = new ListNode(0, head), prev = dummy;
-        while (head != null) {
-            if (head.val == val) {
-                head = prev.next = head.next;
-            } else {
-                prev = head;
-                head = head.next;
-            }
+        if (head == null) {
+            return null;
         }
-        return dummy.next;
+        if (head.val == val) {
+            return removeElements(head.next, val);
+        }
+        head.next = removeElements(head.next, val);
+        return head;
     }
 
     public static void main(String[] args) {
