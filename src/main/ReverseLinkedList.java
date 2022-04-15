@@ -6,14 +6,13 @@ import java.util.List;
 public class ReverseLinkedList {
 
     public static ListNode reverseList(ListNode head) {
-        ListNode result = null;
-        while (head != null) {
-            ListNode x = head.next;
-            head.next = result;
-            result = head;
-            head = x;
+        if (head == null || head.next == null) {
+            return head;
         }
-        return result;
+        ListNode next = reverseList(head.next);
+        head.next.next = head;
+        head.next = null;
+        return next;
     }
 
     public static void main(String[] args) {
