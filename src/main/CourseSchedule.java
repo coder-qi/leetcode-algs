@@ -1,4 +1,6 @@
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -6,53 +8,54 @@ import java.util.Map;
  */
 public class CourseSchedule {
 
-    Map<Integer, Node> nodes = new HashMap<>();
-    int[][] prerequisites;
+    List<Integer>[] edges;
+    boolean[] marked;
+    boolean[] onStack;
+    boolean hasCycle;
 
     public boolean canFinish(int numCourses, int[][] prerequisites) {
         if (prerequisites.length <= 1) {
             return true;
         }
-        this.prerequisites = prerequisites;
+        edges = new List[numCourses];
         for (int i = 0; i < prerequisites.length; i++) {
-            Node p = getNode(prerequisites[i][0]), q = getNode(prerequisites[i][1]);
-            p.next = q;
+            addEdge(prerequisites[i][0], prerequisites[i][1]);
         }
 
-        boolean[] vis = new boolean[numCourses];
-        for (Node node : nodes.values()) {
-            if (!vis[node.val]) {
-                vis[node.val] = true;
-                Node slow = node, fast = node.next;
-                while (fast != null && fast.next != null) {
-                    slow = slow.next;
-                    vis[fast.val] = vis[fast.next.val] = true;
-                    fast = fast.next.next;
-                    if (slow == fast) {
-                        return false;
-                    }
-                }
+        marked = new boolean[numCourses];
+        onStack = new boolean[numCourses];
+        for (int v = 0; v < numCourses; v++) {
+            if (!marked[v]) {
+                dfs(v);
             }
         }
-        return true;
+        return !hasCycle;
     }
 
-    private Node getNode(int x) {
-        Node node = nodes.get(x);
-        if (node == null) {
-            node = new Node(x);
-            nodes.put(x, node);
+    private void dfs(int v) {
+        if (edges[v] == null) {
+            return;
         }
-        return node;
+        onStack[v] = true;
+        marked[v] = true;
+        for (int w : edges[v]) {
+            if (hasCycle) {
+                return;
+            }
+            if (!marked[w]) {
+                dfs(w);
+            } else if (onStack[w]) {
+                hasCycle = true;
+            }
+        }
+        onStack[v] = false;
     }
 
-    static class Node {
-        int val;
-        Node next;
-
-        public Node(int val) {
-            this.val = val;
+    private void addEdge(int x, int y) {
+        if (edges[x] == null) {
+            edges[x] = new ArrayList<>();
         }
+        edges[x].add(y);
     }
 
     public static void main(String[] args) {
