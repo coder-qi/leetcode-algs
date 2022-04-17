@@ -10,35 +10,32 @@ import java.util.Queue;
  */
 public class MaximumScoreOfANodeSequence {
 
-    List<List<Integer>> lists = new ArrayList<>();
-    int ans = 0;
 
-    public int maximumScore(int[] scores, int[][] edges) {
+    public static int maximumScore(int[] scores, int[][] edges) {
         int n = scores.length;
+        List<List<Integer>> graph = new ArrayList<>();
         for (int i = 0; i < n; i++) {
-            lists.add(new ArrayList<>());
+            graph.add(new ArrayList<>());
         }
-        int[] in = new int[n];
         for (int i = 0; i < edges.length; i++) {
-            lists.get(edges[i][0]).add(edges[i][1]);
-            lists.get(edges[i][1]).add(edges[i][0]);
+            graph.get(edges[i][0]).add(edges[i][1]);
+            graph.get(edges[i][1]).add(edges[i][0]);
         }
 
-        Queue<Integer> q = new LinkedList<>();
+        int ans = 0;
         for (int i = 0; i < n; i++) {
-            if (in[i] > 1) {
-                //q.offer()
-            }
+
         }
         return 0;
     }
 
-    private void dfs(int v, int[] mark) {
-
-    }
-
     public static void main(String[] args) {
-
+        System.out.println(maximumScore(new int[] {5,2,9,8,4}, new int[][]{
+            {0,1},{1,2},{2,3},{0,2},{1,3},{2,4}
+        }));
+        System.out.println(maximumScore(new int[] {9,20,6,4,11,12}, new int[][]{
+            {0,3},{5,3},{2,4},{1,3}
+        }));
     }
 
 }
