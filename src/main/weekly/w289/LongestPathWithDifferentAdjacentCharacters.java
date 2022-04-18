@@ -2,6 +2,7 @@ package weekly.w289;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.PriorityQueue;
 
 /**
  * 6073. 相邻字符不同的最长路径：https://leetcode-cn.com/problems/longest-path-with-different-adjacent-characters/
@@ -27,18 +28,15 @@ public class LongestPathWithDifferentAdjacentCharacters {
         if (children.get(root).isEmpty()) {
             return 1;
         }
-        int len = 0;
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
         for (int child : children.get(root)) {
             if (s.charAt(root) == s.charAt(child)) {
                 continue;
             }
             int childLen = dfs(child);
-            ans = Math.max(ans, len + childLen + 1);
-            if (childLen > len) {
-                len = childLen;
-            }
+
         }
-        return len + 1;
+        return 0;
     }
 
     static int ans(int[] parent, String s) {
