@@ -8,24 +8,19 @@ public class LexicographicalNumbers {
 
     public static List<Integer> lexicalOrder(int n) {
         List<Integer> result = new ArrayList<>();
-        for (int i = 1, j = Math.min(n, 9); i <= j; i++) {
-            dfs(i, n, result);
+        int num = 1;
+        for (int i = 0; i < n; i++) {
+            result.add(num);
+            if (num * 10 <= n) {
+                num *= 10;
+            } else {
+                while (num % 10 == 9 || num + 1 > n) {
+                    num /= 10;
+                }
+                num++;
+            }
         }
         return result;
-    }
-
-    private static void dfs(int a, int n, List<Integer> result) {
-        if (a > n) {
-            return;
-        }
-        result.add(a);
-        for (int i = 0; i <= 9; i++) {
-            int b = a * 10 + i;
-            if (b > n) {
-                break;
-            }
-            dfs(b, n, result);
-        }
     }
 
     public static void main(String[] args) {
