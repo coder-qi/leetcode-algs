@@ -1,4 +1,3 @@
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -6,18 +5,7 @@ import java.util.Set;
  */
 public class GoatLatin {
 
-    static final Set<Character> VOWELS = new HashSet<>() {{
-        add('a');
-        add('e');
-        add('i');
-        add('o');
-        add('u');
-        add('A');
-        add('E');
-        add('I');
-        add('O');
-        add('U');
-    }};
+    static final Set<Character> VOWELS = Set.of('a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U');
 
     public static String toGoatLatin(String sentence) {
         int n = sentence.length();
@@ -28,9 +16,6 @@ public class GoatLatin {
                 right++;
             }
             wordCount++;
-            if (result.length() > 0) {
-                result.append(' ');
-            }
             if (VOWELS.contains(sentence.charAt(left))) {
                 result.append(sentence, left, right);
             } else {
@@ -41,8 +26,10 @@ public class GoatLatin {
             for (int i = 0; i < wordCount; i++) {
                 result.append('a');
             }
+            result.append(' ');
             right = left = right + 1;
         }
+        result.setLength(result.length() - 1);
         return result.toString();
     }
 
