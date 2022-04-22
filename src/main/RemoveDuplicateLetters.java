@@ -4,33 +4,28 @@
 public class RemoveDuplicateLetters {
 
     public static String removeDuplicateLetters(String s) {
-        int n = s.length();
         int[] counts = new int[26];
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i <  s.length(); i++) {
             counts[s.charAt(i) - 'a']++;
         }
         StringBuilder result = new StringBuilder();
-        int left = 0, right = 0;
-        while (left < n) {
-            while (right < n && counts[s.charAt(right) - 'a'] != 1) {
-                if (counts[s.charAt(right) - 'a'] != 0) {
-                    counts[s.charAt(right) - 'a']--;
-                }
-                right++;
-            }
-            if (right < n) {
-                char c = s.charAt(right);
-                for (int i = right - 1; i >= left; i--) {
-                    if (s.charAt(i) < c && counts[s.charAt(i) - 'a'] != 0) {
-                        result.append(s.charAt(i));
-                        c = s.charAt(i);
-                        counts[s.charAt(i) - 'a'] = 0;
+        boolean[] vis = new boolean[26];
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (!vis[c - 'a']) {
+                char topChar;
+                while (result.length() > 0 && (topChar = result.charAt(result.length() - 1)) > c) {
+                    if (counts[topChar - 'a'] > 0) {
+                        vis[topChar - 'a'] = false;
+                        result.deleteCharAt(result.length() - 1);
+                    } else {
+                        break;
                     }
                 }
-                result.append(s.charAt(right));
+                vis[c - 'a'] = true;
+                result.append(c);
             }
-
-            left = right = right + 1;
+            counts[c - 'a']--;
         }
         return result.toString();
     }
