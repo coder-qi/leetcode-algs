@@ -40,17 +40,53 @@ public class ArrayUtils {
        return print(nums, nums.length);
     }
 
-    public static String print(int[][] arr) {
+    public static String print(int[][] matrix) {
+        return print(matrix, true);
+    }
+
+    public static String prints(int[][] matrix) {
+        return print(matrix, false);
+    }
+
+    public static String print(int[][] matrix, boolean pretty) {
+        if (matrix == null) {
+            return "[]";
+        }
         StringBuilder sb = new StringBuilder();
         sb.append('[');
-        for (int i = 0; i < arr.length; i++) {
-            sb.append(Arrays.toString(arr[i]))
-                .append(",\n");
+        for (int i = 0; i < matrix.length; i++) {
+            sb.append(Arrays.toString(matrix[i])).append(',');
+            if (pretty) {
+                sb.append("\n");
+            }
         }
-        if (arr.length != 0) {
-            sb.setLength(sb.length() - 2);
+        if (matrix.length != 0) {
+            sb.setLength(sb.length() - (pretty ? 2 : 1));
         }
         sb.append("]");
         return sb.toString();
     }
+
+    public static int[][] matrix(String s) {
+        s = s.trim();
+        s = s.substring(1, s.length() - 1);
+        String[] items = s.split("\\]\\s*,\\s*");
+        int[][] result = new int[items.length][];
+        for (int i = 0; i < items.length; i++) {
+            result[i] = array(items[i] + (i != items.length - 1 ? "]" : ""));
+        }
+        return result;
+    }
+
+    public static int[] array(String s) {
+        s = s.trim();
+        s = s.substring(1, s.length() - 1);
+        String[] items = s.split("\\s*,\\s*");
+        int[] result = new int[items.length];
+        for (int i = 0; i < items.length; i++) {
+            result[i] = Integer.parseInt(items[i]);
+        }
+        return result;
+    }
+
 }
