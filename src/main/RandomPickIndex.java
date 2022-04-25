@@ -1,7 +1,3 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 /**
@@ -11,18 +7,24 @@ public class RandomPickIndex {
 
     static class Solution {
 
-        Map<Integer, List<Integer>> indexes = new HashMap<>();
+        int[] nums;
         Random random = new Random();
 
         public Solution(int[] nums) {
-            for (int i = 0; i < nums.length; i++) {
-                indexes.computeIfAbsent(nums[i], k -> new ArrayList<>()).add(i);
-            }
+            this.nums = nums;
         }
 
         public int pick(int target) {
-            List<Integer> list = indexes.get(target);
-            return list.get(random.nextInt(list.size()));
+            int result = 0;
+            for (int i = 0, cnt = 0; i < nums.length; i++) {
+                if (nums[i] == target) {
+                    cnt++;
+                    if (random.nextInt(cnt) == 0) {
+                        result = i;
+                    }
+                }
+            }
+            return result;
         }
     }
 
