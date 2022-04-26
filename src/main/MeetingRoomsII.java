@@ -1,6 +1,4 @@
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.PriorityQueue;
 
 import static util.ArrayUtils.matrix;
 
@@ -10,16 +8,23 @@ import static util.ArrayUtils.matrix;
 public class MeetingRoomsII {
 
     public static int minMeetingRooms(int[][] intervals) {
-        PriorityQueue<Integer> pq = new PriorityQueue<>();
-        Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
-        pq.add(intervals[0][1]);
-        for (int i = 1; i < intervals.length; i++) {
-            if (pq.peek() <= intervals[i][0]) {
-                pq.poll();
-            }
-            pq.add(intervals[i][1]);
+        int[] startTimings = new int[intervals.length],
+            endTimings = new int[intervals.length];
+        for (int i = 0; i < intervals.length; i++) {
+            startTimings[i] = intervals[i][0];
+            endTimings[i] = intervals[i][1];
         }
-        return pq.size();
+        Arrays.sort(startTimings);
+        Arrays.sort(endTimings);
+        int ans = 0;
+        for (int startIndex = 0, endIndex = 0; startIndex < startTimings.length; startIndex++) {
+            if (startTimings[startIndex] >= endTimings[endIndex]) {
+                endIndex++;
+            } else {
+                ans++;
+            }
+        }
+        return ans;
     }
 
     public static void main(String[] args) {
