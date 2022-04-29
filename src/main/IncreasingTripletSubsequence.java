@@ -6,15 +6,19 @@ import static util.ArrayUtils.array;
 public class IncreasingTripletSubsequence {
 
     public static boolean increasingTriplet(int[] nums) {
-        int first = 0, second = 0;
-        for (int i = 1; i < nums.length; i++) {
-            if (first == second || nums[i] <= nums[second]) {
-                if (nums[i] > nums[first]) {
-                    second = i;
-                } else {
-                    first = second = i;
-                }
-            } else {
+        int n = nums.length;
+        int[] leftMin = new int[n];
+        for (int i = 1, min = nums[0]; i < n; i++) {
+            leftMin[i] = min;
+            min = Math.min(min, nums[i]);
+        }
+        int[] rightMax = new int[n];
+        for (int i = n - 2, max = nums[n - 1]; i >= 0; i--) {
+            rightMax[i] = max;
+            max = Math.max(max, nums[i]);
+        }
+        for (int i = 1; i < n - 1; i++) {
+            if (nums[i] > leftMin[i] && nums[i] < rightMax[i]) {
                 return true;
             }
         }
