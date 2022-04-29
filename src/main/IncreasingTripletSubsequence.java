@@ -6,19 +6,13 @@ import static util.ArrayUtils.array;
 public class IncreasingTripletSubsequence {
 
     public static boolean increasingTriplet(int[] nums) {
-        int n = nums.length;
-        int[] leftMin = new int[n];
-        for (int i = 1, min = nums[0]; i < n; i++) {
-            leftMin[i] = min;
-            min = Math.min(min, nums[i]);
-        }
-        int[] rightMax = new int[n];
-        for (int i = n - 2, max = nums[n - 1]; i >= 0; i--) {
-            rightMax[i] = max;
-            max = Math.max(max, nums[i]);
-        }
-        for (int i = 1; i < n - 1; i++) {
-            if (nums[i] > leftMin[i] && nums[i] < rightMax[i]) {
+        int first = nums[0], second = Integer.MAX_VALUE;
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] <= first) {
+                first = nums[i];
+            } else if (nums[i] <= second) {
+                second = nums[i];
+            } else {
                 return true;
             }
         }
@@ -30,6 +24,7 @@ public class IncreasingTripletSubsequence {
         System.out.println(increasingTriplet(array("[5,4,3,2,1]"))); // false
         System.out.println(increasingTriplet(array("[2,1,5,0,4,6]"))); // true
         System.out.println(increasingTriplet(array("[20,100,10,12,5,13]"))); // true
+        System.out.println(increasingTriplet(array("[2,4,-2,-3]"))); // true
     }
 
 }
