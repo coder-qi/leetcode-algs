@@ -5,15 +5,13 @@ public class SubarrayProductLessThanK {
 
     public static int numSubarrayProductLessThanK(int[] nums, int k) {
         int ans = 0;
-        for (int i = 0; i < nums.length; i++) {
-            long product = 1;
-            for (int j = i; j < nums.length; j++) {
-                product *= nums[j];
-                if (product >= k) {
-                    break;
-                }
-                ans++;
+        long product = 1;
+        for (int right = 0, left = 0; right < nums.length; right++) {
+            product *= nums[right];
+            while (left <= right && product >= k) {
+                product /= nums[left++];
             }
+            ans += right - left + 1;
         }
         return ans;
     }
