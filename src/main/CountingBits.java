@@ -8,14 +8,7 @@ public class CountingBits {
     public static int[] countBits(int n) {
         int[] result = new int[n + 1];
         for (int i = 0; i <= n; i++) {
-            int num = i, count = 0;
-            while (num != 0) {
-                if ((num & 1) != 0) {
-                    count++;
-                }
-                num >>= 1;
-            }
-            result[i] = count;
+            result[i] = Integer.bitCount(i);
         }
         return result;
     }
