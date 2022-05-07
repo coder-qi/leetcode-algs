@@ -11,22 +11,23 @@ public class HouseRobberII {
             return n == 1 ? nums[0] : Math.max(nums[0], nums[1]);
         }
         // 0 ~ n - 1
-        int[] dp = new int[n - 1];
-        dp[0] = nums[0];
-        dp[1] = Math.max(nums[0], nums[1]);
+        int first = nums[0], second = Math.max(nums[0], nums[1]);
         for (int i = 2; i < n - 1; i++) {
-            dp[i] = Math.max(dp[i - 2] + nums[i], dp[i - 1]);
+            int t = second;
+            second = Math.max(first + nums[i], second);
+            first = t;
         }
-        int ans = dp[n - 2];
+        int ans = second;
 
         // 1 ~ n
-        dp = new int[n];
-        dp[1] = nums[1];
-        dp[2] = Math.max(nums[1], nums[2]);
+        first = nums[1];
+        second = Math.max(nums[1], nums[2]);
         for (int i = 3; i < n; i++) {
-            dp[i] = Math.max(dp[i - 2] + nums[i], dp[i - 1]);
+            int t = second;
+            second = Math.max(first + nums[i], second);
+            first = t;
         }
-        ans = Math.max(ans, dp[n - 1]);
+        ans = Math.max(ans, second);
         return ans;
     }
 
