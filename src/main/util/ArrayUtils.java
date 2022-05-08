@@ -1,6 +1,7 @@
 package util;
 
 import java.util.Arrays;
+import java.util.function.Function;
 
 public class ArrayUtils {
 
@@ -74,6 +75,28 @@ public class ArrayUtils {
         int[][] result = new int[items.length][];
         for (int i = 0; i < items.length; i++) {
             result[i] = array(items[i] + (i != items.length - 1 ? "]" : ""));
+        }
+        return result;
+    }
+
+    public static char[][] matrixChar(String s) {
+        s = s.trim();
+        s = s.substring(1, s.length() - 1);
+        String[] items = s.split("\\]\\s*,\\s*");
+        char[][] result = new char[items.length][];
+        for (int i = 0; i < items.length; i++) {
+            result[i] = arrayChar(items[i] + (i != items.length - 1 ? "]" : ""));
+        }
+        return result;
+    }
+
+    public static char[] arrayChar(String s) {
+        s = s.trim();
+        s = s.substring(1, s.length() - 1);
+        String[] items = s.split("\\s*,\\s*");
+        char[] result = new char[items.length];
+        for (int i = 0; i < items.length; i++) {
+            result[i] = items[i].charAt(1);
         }
         return result;
     }
