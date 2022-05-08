@@ -7,17 +7,22 @@ public class MaximalSquare {
 
     public static int maximalSquare(char[][] matrix) {
         int m = matrix.length, n = matrix[0].length;
-        int[][] dp = new int[m][n];
+        int[] dp = new int[n];
         int maxSide = 0;
         for (int i = 0; i < m; i++) {
+            int prev = 0;
             for (int j = 0; j < n; j++) {
                 if (matrix[i][j] == '1') {
+                    int t = dp[j];
                     if (i == 0 || j == 0) {
-                        dp[i][j] = 1;
+                        dp[j] = 1;
                     } else {
-                        dp[i][j] = Math.min(Math.min(dp[i - 1][j], dp[i - 1][j - 1]), dp[i][j - 1]) + 1;
+                        dp[j] = Math.min(Math.min(dp[j], dp[j - 1]), prev) + 1;
                     }
-                    maxSide = Math.max(maxSide, dp[i][j]);
+                    prev = t;
+                    maxSide = Math.max(maxSide, dp[j]);
+                } else {
+                    dp[j] = 0;
                 }
             }
         }
