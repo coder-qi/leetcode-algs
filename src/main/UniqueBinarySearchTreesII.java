@@ -2,6 +2,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import util.TreeNode;
+
 /**
  * 不同的二叉搜索树 II：https://leetcode-cn.com/problems/unique-binary-search-trees-ii/
  */
