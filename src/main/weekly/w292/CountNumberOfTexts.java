@@ -6,42 +6,31 @@ package weekly.w292;
 public class CountNumberOfTexts {
 
     static final int MOD = 1000000007;
-    static final String[] letters = {"abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
-    int[][] mem;
 
     public int countTexts(String pressedKeys) {
         int n = pressedKeys.length();
-        mem = new int[4][n];
+        int[] f = new int[n + 1], g = new int[n + 1];
+        f[0] = g[0] = 1;
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= 3 && j <= i; j++) {
+                f[i] = (f[i] + f[i - j]) % MOD;
+            }
+            for (int j = 1; j <= 4 && j <= i; j++) {
+                g[i] = (g[i] + g[i - j]) % MOD;
+            }
+        }
 
         long ans = 1;
-        int left = 0;
-        while (left < n) {
-            int right = left + 1;
-            while (right < n && pressedKeys.charAt(left) == pressedKeys.charAt(right)) {
-                right++;
+        for (int i = 0; i < n;) {
+            char ch = pressedKeys.charAt(i);
+            int j = i + 1;
+            while (j < n && pressedKeys.charAt(j) == ch) {
+                j++;
             }
-            String letter = letters[pressedKeys.charAt(left) - '0' - 2];
-            ans *= dfs(letter.length(), right - left);
-            ans %= MOD;
-            left = right;
+            ans = ans * (ch == '7' || ch == '9' ? g[j - i] : f[j - i]) % MOD;
+            i = j;
         }
         return (int) ans;
-    }
-
-    private int dfs(int len, int count) {
-        if (count <= 0) {
-            return count == 0 ? 1 : 0;
-        }
-        if (mem[len - 1][count - 1] != 0) {
-            return mem[len - 1][count - 1];
-        }
-        int result = 0;
-        for (int i = 1; i <= len && i <= count; i++) {
-            result += dfs(len, count - i);
-            result %= MOD;
-        }
-        mem[len - 1][count - 1] = result;
-        return result;
     }
 
     public static void main(String[] args) {
