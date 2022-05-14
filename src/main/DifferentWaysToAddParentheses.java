@@ -1,36 +1,45 @@
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 241. 为运算表达式设计优先级：https://leetcode.cn/problems/different-ways-to-add-parentheses/
  */
 public class DifferentWaysToAddParentheses {
 
-    Map<String, List<Integer>> memo = new HashMap<>();
-
     public List<Integer> diffWaysToCompute(String expression) {
-        if (memo.containsKey(expression)) {
-            return memo.get(expression);
+        List<Integer> nums = new ArrayList<>();
+        List<Character> ops = new ArrayList<>();
+        for (int i = 0; i < expression.length();) {
+            int num = 0;
+            while (i < expression.length() && Character.isDigit(expression.charAt(i))) {
+                num = num * 10 + expression.charAt(i) - '0';
+                i++;
+            }
+            nums.add(num);
+            if (i < expression.length()) {
+                ops.add(expression.charAt(i++));
+            }
         }
-        List<Integer> result = new ArrayList<>();
-        for (int i = 0; i < expression.length(); i++) {
-            if (!Character.isDigit(expression.charAt(i))) {
-                List<Integer> left = diffWaysToCompute(expression.substring(0, i));
-                List<Integer> right = diffWaysToCompute(expression.substring(i + 1));
-                for (int lv : left) {
-                    for (int rv : right) {
-                        result.add(calc(lv, rv, expression.charAt(i)));
+        int n = nums.size();
+        List<Integer>[][] dp = new List[n][n];
+        // dp[i][j] = dp[i][k] ops dp[k + 1][j]
+        for (int i = n - 1; i >= 0; i--) {
+            dp[i][i] = new ArrayList<>();
+            dp[i][i].add(nums.get(i));
+            for (int j = i + 1; j < n; j++) {
+                if (dp[i][j] == null) {
+                    dp[i][j] = new ArrayList<>();
+                }
+                for (int k = i; k < j; k++) {
+                    for (int p : dp[i][k]) {
+                        for (int q : dp[k + 1][j]) {
+                            dp[i][j].add(calc(p, q, ops.get(k)));
+                        }
                     }
                 }
             }
         }
-        if (result.isEmpty()) {
-            result.add(Integer.valueOf(expression));
-        }
-        memo.put(expression, result);
-        return result;
+        return dp[0][n - 1];
     }
 
     private static int calc(int i, int j, char op) {
