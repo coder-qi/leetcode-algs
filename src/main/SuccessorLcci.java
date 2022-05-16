@@ -1,6 +1,3 @@
-import java.util.ArrayList;
-import java.util.List;
-
 import util.TreeNode;
 
 /**
@@ -9,25 +6,24 @@ import util.TreeNode;
 public class SuccessorLcci {
 
     public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
-        if (root == null || p == null) {
-            return null;
+        TreeNode successor = null;
+        if (p.right != null) {
+            successor = p.right;
+            while (successor.left != null) {
+                successor = successor.left;
+            }
+            return successor;
         }
-        List<TreeNode> list = new ArrayList<>();
-        inorder(root, list);
-        int index = list.indexOf(p);
-        if (index != -1 && index < list.size() - 1) {
-            return list.get(index + 1);
+        TreeNode node = root;
+        while (node != null) {
+            if (p.val < node.val) {
+                successor = node;
+                node = node.left;
+            } else {
+                node = node.right;
+            }
         }
-        return null;
-    }
-
-    private void inorder(TreeNode root, List<TreeNode> list) {
-        if (root == null) {
-            return;
-        }
-        inorder(root.left, list);
-        list.add(root);
-        inorder(root.right, list);
+        return successor;
     }
 
     public static void main(String[] args) {
