@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 import static util.ArrayUtils.array;
 
 /**
@@ -6,21 +8,18 @@ import static util.ArrayUtils.array;
 public class MinimumMovesToEqualArrayElementsII {
 
     public static int minMoves2(int[] nums) {
-        long sum = 0;
-        for (int i = 0; i < nums.length; i++) {
-            sum += nums[i];
-        }
-        long avg = sum / nums.length;
+        Arrays.sort(nums);
+        int mid = nums[nums.length / 2];
         int ans = 0;
         for (int i = 0; i < nums.length; i++) {
-            ans += Math.abs(avg - nums[i]);
+            ans += Math.abs(nums[i] - mid);
         }
         return ans;
     }
 
     public static void main(String[] args) {
-        System.out.println(minMoves2(array("[1,2,3]")));
-        System.out.println(minMoves2(array("[1,10,2,9]")));
+        System.out.println(minMoves2(array("[1,2,3]"))); // 2
+        System.out.println(minMoves2(array("[1,10,2,9]"))); // 16
     }
 
 }
