@@ -1,5 +1,4 @@
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Random;
 
 /**
  * 961. 在长度 2N 的数组中找出重复 N 次的元素：https://leetcode.cn/problems/n-repeated-element-in-size-2n-array/
@@ -7,16 +6,15 @@ import java.util.Map;
 public class NRepeatedElementInSize2nArray {
 
     public static int repeatedNTimes(int[] nums) {
-        int n = nums.length / 2;
-        Map<Integer, Integer> countMap = new HashMap<>();
-        for (int i = 0; i < 2 * n; i++) {
-            int count = countMap.getOrDefault(nums[i], 0);
-            if (count == n - 1) {
+        int n = nums.length;
+        Random random = new Random();
+        while (true) {
+            int i = random.nextInt(n);
+            int j = random.nextInt(n);
+            if (i != j && nums[i] == nums[j]) {
                 return nums[i];
             }
-            countMap.put(nums[i], count + 1);
         }
-        return -1;
     }
 
     public static void main(String[] args) {
