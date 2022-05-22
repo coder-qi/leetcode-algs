@@ -40,9 +40,9 @@ public class CanIWin {
     }
 
     public static void main(String[] args) {
-        System.out.println(new CanIWin().canIWin(10, 11));
-        System.out.println(new CanIWin().canIWin(10, 0));
-        System.out.println(new CanIWin().canIWin(10, 1));
+        System.out.println(new CanIWin().canIWin(10, 11)); // false
+        System.out.println(new CanIWin().canIWin(10, 0)); // true
+        System.out.println(new CanIWin().canIWin(10, 1)); // true
     }
 
 }
