@@ -1,12 +1,9 @@
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * 464. 我能赢吗：https://leetcode.cn/problems/can-i-win/
  */
 public class CanIWin {
 
-    Map<Integer, Boolean> memo = new HashMap<>();
+    int[] memo;
     int maxChoosableInteger, desiredTotal;
 
     public boolean canIWin(int maxChoosableInteger, int desiredTotal) {
@@ -15,12 +12,14 @@ public class CanIWin {
         }
         this.maxChoosableInteger = maxChoosableInteger;
         this.desiredTotal = desiredTotal;
+        memo = new int[1 << maxChoosableInteger];
+
         return dfs(0, 0);
     }
 
     private boolean dfs(int useNumbers, int currentTotal) {
-        if (memo.containsKey(useNumbers)) {
-            return memo.get(useNumbers);
+        if (memo[useNumbers] != 0) {
+            return memo[useNumbers] == 1;
         }
         boolean result = false;
         for (int i = 0; i < maxChoosableInteger; i++) {
@@ -35,7 +34,7 @@ public class CanIWin {
                 }
             }
         }
-        memo.put(useNumbers, result);
+        memo[useNumbers] = result ? 1 : -1;
         return result;
     }
 
