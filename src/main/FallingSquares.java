@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -19,34 +18,24 @@ public class FallingSquares {
         for (int i = 0; i < n; i++) {
             int left = positions[i][0], right = left + positions[i][1] - 1;
             int sideLength = positions[i][1];
-            Integer lp = heightMap.higherKey(left), rp = heightMap.higherKey(right);
+            int rHeight = heightMap.floorEntry(right + 1).getValue();
 
-            // 计算第i个掉落的方块的最大高度
+            // 第i块方块堆积的高度
             int height = 0;
-            Integer prevLeftKey = lp != null ? heightMap.lowerKey(lp) : heightMap.lastKey();
-            Map<Integer, Integer> tail = prevLeftKey != null ? heightMap.tailMap(prevLeftKey) : heightMap;
-            for (Map.Entry<Integer, Integer> entry : tail.entrySet()) {
-                if (entry.getKey().equals(rp)) {
+            Map.Entry<Integer, Integer> lower;
+            while ((lower = heightMap.floorEntry(right)) != null) {
+                height = Math.max(height, lower.getValue());
+                if (lower.getKey() >= left) {
+                    heightMap.remove(lower.getKey()); // 清除[left, right]范围内的height
+                }
+                if (lower.getKey() <= left) {
                     break;
                 }
-                height = Math.max(height, entry.getValue() + sideLength);
             }
+            height += sideLength;
 
-            Integer prevRightKey = rp != null ? heightMap.lowerKey(rp) : heightMap.lastKey();
-            int rHeight = prevRightKey != null ? heightMap.get(prevRightKey) : 0;
-            // 清除 heightMap 中位于(left, right] 内的点
-            for (Iterator<Integer> it = tail.keySet().iterator(); it.hasNext();) {
-                Integer tmp = it.next();
-                if (lp == null || tmp < lp) {
-                    continue;
-                }
-                if (rp != null && tmp >= rp) {
-                    break;
-                }
-                it.remove();
-            }
             heightMap.put(left, height);
-            if (rp == null || rp != right + 1) {
+            if (!heightMap.containsKey(right + 1)) {
                 heightMap.put(right + 1, rHeight);
             }
             heights.add(i > 0 ? Math.max(heights.get(i - 1), height) : height);
@@ -57,6 +46,7 @@ public class FallingSquares {
     public static void main(String[] args) {
         System.out.println(fallingSquares(ArrayUtils.matrix("[[1,2],[2,3],[6,1]]"))); // [2, 5, 5]
         System.out.println(fallingSquares(ArrayUtils.matrix("[[100, 100], [200, 100]]"))); // [100, 100]
+        System.out.println(fallingSquares(ArrayUtils.matrix("[[9,1],[6,5],[6,7]]"))); // [1,6,13]
     }
 
 }
