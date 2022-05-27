@@ -3,6 +3,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import util.ResourceUtils;
+
 import static util.ArrayUtils.array;
 
 /**
@@ -31,8 +33,7 @@ public class FindAllDuplicatesInAnArray {
         System.out.println(findDuplicates(array("[4,3,2,7,8,2,3,1]"))); // [2,3]
         System.out.println(findDuplicates(array("[1,1,2]"))); // [1]
         System.out.println(findDuplicates(array("[1]"))); // []
-        System.out.println(findDuplicates(array(Files.readString(Paths.get(
-            FindAllDuplicatesInAnArray.class.getResource("testcase/442-testcase-1.txt").toURI()))))); // []
+        System.out.println(findDuplicates(array(ResourceUtils.loadTestcase("442-testcase-1.txt")))); // []
     }
 
 }
