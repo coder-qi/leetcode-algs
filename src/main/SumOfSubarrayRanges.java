@@ -1,3 +1,6 @@
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 import static util.ArrayUtils.array;
 
 /**
@@ -6,17 +9,39 @@ import static util.ArrayUtils.array;
 public class SumOfSubarrayRanges {
 
     public static long subArrayRanges(int[] nums) {
+        long maxSum = sum(nums, false);
+        long minSum = sum(nums, true);
+        return maxSum - minSum;
+    }
+
+    private static long sum(int[] nums, boolean sumMin) {
         int n = nums.length;
-        long ans = 0;
-        for (int i = 0; i < n; i++) {
-            int min = nums[i], max = nums[i];
-            for (int j = i + 1; j < n; j++) {
-                min = Math.min(min, nums[j]);
-                max = Math.max(max, nums[j]);
-                ans += max - min;
+        Deque<Integer> stack = new ArrayDeque<>();
+        long sum = 0;
+        for (int i = -1; i <= n; i++) {
+            while (check(nums, i, stack, sumMin)) {
+                int cur = stack.pop();
+                int left = stack.peek(), right = i;
+                sum += (cur - left) * (right - cur) * (long)nums[cur];
             }
+            stack.push(i);
         }
-        return ans;
+        return sum;
+    }
+
+    private static boolean check(int[] nums, int index, Deque<Integer> stack, boolean sumMin) {
+        if (stack.isEmpty()) {
+            return false;
+        }
+        if (sumMin) {
+            return getValue(nums, stack.peek(), Integer.MIN_VALUE) > getValue(nums, index, Integer.MIN_VALUE);
+        } else {
+            return getValue(nums, stack.peek(), Integer.MAX_VALUE) < getValue(nums, index, Integer.MAX_VALUE);
+        }
+    }
+
+    private static int getValue(int[] nums, int index, int defaultValue) {
+        return index == -1 || index == nums.length ? defaultValue : nums[index];
     }
 
     public static void main(String[] args) {
