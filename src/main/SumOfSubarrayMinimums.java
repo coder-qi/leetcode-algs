@@ -13,30 +13,20 @@ public class SumOfSubarrayMinimums {
 
     public static int sumSubarrayMins(int[] arr) {
         int n = arr.length;
-        int[] left = new int[n]; // 每个元素辐射的左边界
-        Deque<Integer> stack = new LinkedList<>();
-        for (int i = 0; i < n; i++) {
-            while (!stack.isEmpty() && arr[stack.peek()] > arr[i]) {
-                stack.pop();
-            }
-            left[i] = stack.isEmpty() ? -1 : stack.peek();
-            stack.push(i);
-        }
-
-        stack.clear();
-        int[] right = new int[n]; // 每个元素辐射的右边界
-        for (int i = n - 1; i >= 0; i--) {
-            while (!stack.isEmpty() && arr[stack.peek()] >= arr[i]) {
-                stack.pop();
-            }
-            right[i] = stack.isEmpty() ? n : stack.peek();
-            stack.push(i);
-        }
         long ans = 0;
-        for (int i = 0; i < n; i++) {
-            ans = (ans + (long)(i - left[i]) * (right[i] - i) * arr[i]) % MOD;
+        Deque<Integer> stack = new LinkedList<>();
+        for (int i = -1; i <= n; i++) {
+            while (!stack.isEmpty() && getValue(arr, stack.peek()) > getValue(arr, i)) {
+                int cur = stack.pop();
+                ans = (ans + (long)(cur - stack.peek()) * (i - cur) * arr[cur]) % MOD;
+            }
+            stack.push(i);
         }
         return (int) ans;
+    }
+
+    private static int getValue(int[] arr, int index) {
+        return index == -1 || index == arr.length ? Integer.MIN_VALUE : arr[index];
     }
 
     public static void main(String[] args) {
