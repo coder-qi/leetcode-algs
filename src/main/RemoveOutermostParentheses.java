@@ -5,15 +5,16 @@ public class RemoveOutermostParentheses {
 
     public static String removeOuterParentheses(String s) {
         StringBuilder ans = new StringBuilder();
-        for (int i = 0, left = 0, cnt = 0; i < s.length(); i++) {
-            if (s.charAt(i) == '(') {
-                cnt++;
-            } else {
-                cnt--;
+        for (int i = 0, level = 0; i < s.length(); i++) {
+            char ch = s.charAt(i);
+            if (ch == ')') {
+                level--;
             }
-            if (cnt == 0) {
-                ans.append(s, left + 1, i);
-                left = i + 1;
+            if (level > 0) {
+                ans.append(ch);
+            }
+            if (ch == '(') {
+                level++;
             }
         }
         return ans.toString();
