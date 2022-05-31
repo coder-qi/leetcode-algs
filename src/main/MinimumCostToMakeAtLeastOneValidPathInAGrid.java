@@ -1,6 +1,5 @@
+import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.PriorityQueue;
 
 import static util.ArrayUtils.matrix;
 
@@ -13,31 +12,29 @@ public class MinimumCostToMakeAtLeastOneValidPathInAGrid {
 
     public static int minCost(int[][] grid) {
         int m = grid.length, n = grid[0].length;
-        int[][] dist = new int[m][n];
-        boolean[][] visited = new boolean[m][n];
-        for (int i = 0; i < m; i++) {
+        var dist = new int[m][n];
+        for (var i = 0; i < m; i++) {
             Arrays.fill(dist[i], Integer.MAX_VALUE);
         }
         dist[0][0] = 0;
-        PriorityQueue<int[]> q = new PriorityQueue<>(Comparator.comparingInt(a -> a[2]));
-        q.offer(new int[] {0, 0, 0});
+        var q = new ArrayDeque<int[]>();
+        q.offer(new int[] {0, 0});
         while (!q.isEmpty()) {
-            int[] a = q.poll();
+            var a = q.poll();
             int row = a[0], column = a[1];
-            if (visited[row][column]) {
-                continue;
-            }
-            visited[row][column] = true;
-            for (int i = 0; i < 4; i++) {
+            for (var i = 0; i < 4; i++) {
                 int nextRow = row + DIRS[i][0], nextColumn = column + DIRS[i][1];
                 if (nextRow < 0 || nextRow >= m || nextColumn < 0 || nextColumn >= n) {
                     continue;
                 }
-                int curDis = a[2];
-                int newDis = curDis + (grid[row][column] != i + 1 ? 1 : 0);
+                var newDis = dist[row][column] + (grid[row][column] != i + 1 ? 1 : 0);
                 if (newDis < dist[nextRow][nextColumn]) {
                     dist[nextRow][nextColumn] = newDis;
-                    q.offer(new int[] {nextRow, nextColumn, newDis});
+                    if (grid[row][column] == i + 1) {
+                        q.offerFirst(new int[] {nextRow, nextColumn});
+                    } else {
+                        q.offerLast(new int[] {nextRow, nextColumn});
+                    }
                 }
             }
         }
