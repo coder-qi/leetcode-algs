@@ -24,7 +24,7 @@ public class MatchsticksToSquare {
 
     private static boolean dfs(int[] matchsticks, int index, int[] a, int avg) {
         if (index == -1) {
-            return a[0] == avg && a[1] == avg && a[2] == avg;
+            return true;
         }
         for (int i = 0; i < 4; i++) {
             a[i] += matchsticks[index];
