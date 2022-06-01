@@ -19,23 +19,27 @@ public class MatchsticksToSquare {
         if (sum % 4 != 0) {
             return false;
         }
-        int len = sum / 4;
-        int[] dp = new int[1 << n];
-        Arrays.fill(dp, -1);
-        dp[0] = 0;
-        for (int i = 1; i < (1 << n); i++) {
-            for (int j = 0; j < n; j++) {
-                if ((i & (1 << j)) == 0) {
-                    continue;
-                }
-                int i1 = i ^ (1 << j);
-                if (dp[i1] >= 0 && dp[i1] + matchsticks[j] <= len) {
-                    dp[i] = (dp[i1] + matchsticks[j]) % len;
-                    break;
-                }
+        int[] memo = new int[1 << n];
+        Arrays.fill(memo, -1);
+        memo[(1 << n) - 1] = 1;
+        return dfs(matchsticks, memo, 0, 0, sum / 4);
+    }
+
+    private static boolean dfs(int[] matchsticks, int[] memo, int sum, int used, int len) {
+        if (memo[used] != -1) {
+            return memo[used] == 1;
+        }
+        boolean ans = false;
+        for (int i = 0; i < matchsticks.length; i++) {
+            if ((used & (1 << i)) == 0 && sum + matchsticks[i] <= len
+                    && dfs(matchsticks, memo, (sum + matchsticks[i]) % len,
+                    used | (1 << i), len)) {
+                ans = true;
+                break;
             }
         }
-        return dp[(1 << n) - 1] == 0;
+        memo[used] = ans ? 1 : 0;
+        return ans;
     }
 
     public static void main(String[] args) {
