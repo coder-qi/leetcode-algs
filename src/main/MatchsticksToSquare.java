@@ -8,32 +8,34 @@ import static util.ArrayUtils.array;
 public class MatchsticksToSquare {
 
     public static boolean makesquare(int[] matchsticks) {
-        if (matchsticks.length < 4) {
+        int n = matchsticks.length;
+        if (n < 4) {
             return false;
         }
         int sum = 0;
-        for (int i = 0; i < matchsticks.length; i++) {
+        for (int i = 0; i < n; i++) {
             sum += matchsticks[i];
         }
         if (sum % 4 != 0) {
             return false;
         }
-        Arrays.sort(matchsticks);
-        return dfs(matchsticks, matchsticks.length - 1, new int[4], sum / 4);
-    }
-
-    private static boolean dfs(int[] matchsticks, int index, int[] a, int avg) {
-        if (index == -1) {
-            return true;
-        }
-        for (int i = 0; i < 4; i++) {
-            a[i] += matchsticks[index];
-            if (a[i] <= avg && dfs(matchsticks, index - 1, a, avg)) {
-                return true;
+        int len = sum / 4;
+        int[] dp = new int[1 << n];
+        Arrays.fill(dp, -1);
+        dp[0] = 0;
+        for (int i = 1; i < (1 << n); i++) {
+            for (int j = 0; j < n; j++) {
+                if ((i & (1 << j)) == 0) {
+                    continue;
+                }
+                int i1 = i ^ (1 << j);
+                if (dp[i1] >= 0 && dp[i1] + matchsticks[j] <= len) {
+                    dp[i] = (dp[i1] + matchsticks[j]) % len;
+                    break;
+                }
             }
-            a[i] -= matchsticks[index];
         }
-        return false;
+        return dp[(1 << n) - 1] == 0;
     }
 
     public static void main(String[] args) {
