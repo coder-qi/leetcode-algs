@@ -1,7 +1,6 @@
 package weekly.w290;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Arrays;
 
 import static util.ArrayUtils.matrix;
 
@@ -11,19 +10,27 @@ import static util.ArrayUtils.matrix;
 public class CountLatticePointsInsideACircle {
 
     public static int countLatticePoints(int[][] circles) {
-        Set<Integer> s = new HashSet<>();
-        int bound = 201;
+        // 算出最大的坐标
+        int maxX = 0, maxY = 0;
         for (int[] circle : circles) {
             int x = circle[0], y = circle[1], r = circle[2];
-            for (int i = x - r; i <= x + r; i++) {
-                for (int j = y - r; j <= y + r; j++) {
+            maxX = Math.max(maxX, x + r);
+            maxY = Math.max(maxY, y + r);
+;        }
+        Arrays.sort(circles, (c1, c2) -> c2[2] - c1[2]); // 半径越大覆盖的面积越大
+        int ans = 0;
+        for (int i = 0; i <= maxX; i++) {
+            for (int j = 0; j <= maxY; j++) {
+                for (int[] circle : circles) {
+                    int x = circle[0], y = circle[1], r = circle[2];
                     if ((x - i) * (x - i) + (y - j) * (y - j) <= r * r) {
-                        s.add(i + j * bound);
+                        ans++;
+                        break;
                     }
                 }
             }
         }
-        return s.size();
+        return ans;
     }
 
     public static void main(String[] args) {
