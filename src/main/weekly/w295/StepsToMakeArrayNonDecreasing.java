@@ -1,5 +1,8 @@
 package weekly.w295;
 
+import java.util.Deque;
+import java.util.LinkedList;
+
 import static util.ArrayUtils.array;
 
 /**
@@ -8,35 +11,24 @@ import static util.ArrayUtils.array;
 public class StepsToMakeArrayNonDecreasing {
 
     public static int totalSteps(int[] nums) {
-        int n = nums.length;
         int ans = 0;
-        int left = 0;
-        while (left < n) {
-            while (left + 1 < n && nums[left] <= nums[left + 1]) {
-                left++;
-            }
-            int right = left + 1;
+        Deque<int[]> stack = new LinkedList<>();
+        for (int i = 0; i < nums.length; i++) {
             int cnt = 0;
-            while (right < n && nums[left] > nums[right]) {
-                cnt++;
-                while (cnt == 1 && right + 1 < n && nums[right] > nums[right + 1]) {
-                    right++;
-                }
-                right++;
-                if (right < n && nums[right] < nums[right - 1]) {
-                    break;
-                }
+            while (!stack.isEmpty() && stack.peek()[0] <= nums[i]) {
+                cnt = Math.max(cnt, stack.pop()[1]);
             }
-            left++;
+            cnt = stack.isEmpty() ? 0 : cnt + 1;
             ans = Math.max(ans, cnt);
+            stack.push(new int[] {nums[i], cnt});
         }
         return ans;
     }
 
     public static void main(String[] args) {
+        System.out.println(totalSteps(array("[5,3,4,4,7,3,6,11,8,5,11]"))); // 3
         System.out.println(totalSteps(array("[5,14,15,2,11,5,13,15]"))); // 3
         System.out.println(totalSteps(array("[10,1,2,3,4,5,6,1,2,3]"))); // 6
-        System.out.println(totalSteps(array("[5,3,4,4,7,3,6,11,8,5,11]"))); // 3
         System.out.println(totalSteps(array("[4,5,7,7,13]"))); // 0
     }
 
