@@ -18,13 +18,9 @@ public class GenerateRandomPointInACircle {
         }
 
         public double[] randPoint() {
-            while (true) {
-                double newX = random.nextDouble() * (2 * radius) - radius;
-                double newY = random.nextDouble() * (2 * radius) - radius;
-                if (newX * newX + newY * newY <= radius * radius) {
-                    return new double[] {newX + x, newY + y};
-                }
-            }
+            double r = Math.sqrt(random.nextDouble()) * radius;
+            double theta = random.nextDouble() * 2 * Math.PI;
+            return new double[] {x + r * Math.cos(theta), y + r * Math.sin(theta)};
         }
     }
 
