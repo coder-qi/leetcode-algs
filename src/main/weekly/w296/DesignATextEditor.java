@@ -33,33 +33,82 @@ public class DesignATextEditor {
 
     static class TextEditor {
 
-        StringBuilder text = new StringBuilder();
-        int cur = 0;
+        Node root, cur;
 
         public TextEditor() {
+            root = cur = new Node();
+            root.prev = root;
+            root.next = root;
         }
 
         public void addText(String text) {
-            this.text.insert(cur, text);
-            cur += text.length();
+            for (int i = 0; i < text.length(); i++) {
+                cur = cur.insert(text.charAt(i));
+            }
         }
 
         public int deleteText(int k) {
-            int begin = Math.max(0, cur - k);
-            text.delete(begin, cur);
-            int len = cur - begin;
-            cur = begin;
-            return len;
+            int p = k;
+            while (k > 0 && cur != root) {
+                cur = cur.prev;
+                cur.next.remove();
+                k--;
+            }
+            return p - k;
+        }
+
+        String text() {
+            StringBuilder result = new StringBuilder();
+            Node x = cur;
+            for (int k = 10; k > 0 && x != root; k--) {
+                result.append(x.val);
+                x = x.prev;
+            }
+            return result.reverse().toString();
         }
 
         public String cursorLeft(int k) {
-            cur = Math.max(0, cur - k);
-            return text.substring(Math.max(0, cur - 10), cur);
+            while (k > 0 && cur != root) {
+                cur = cur.prev;
+                k--;
+            }
+            return text();
         }
 
         public String cursorRight(int k) {
-            cur = Math.min(text.length(), cur + k);
-            return text.substring(Math.max(0, cur - 10), cur);
+            while (k > 0 && cur.next != root) {
+                cur = cur.next;
+                k--;
+            }
+            return text();
+        }
+
+        static class Node {
+            final char val;
+            Node prev, next;
+
+            Node() {
+                this((char) 0);
+            }
+
+            Node(char val) {
+                this.val = val;
+            }
+
+            Node insert(char val) { // 当前节点后面插入节点
+                Node node = new Node(val);
+                node.prev = this;
+                node.next = this.next;
+
+                this.next.prev = node;
+                this.next = node;
+                return node;
+            }
+
+            void remove() { // 移除当前节点
+                this.prev.next = this.next;
+                this.next.prev = this.prev;
+            }
         }
     }
 
