@@ -1,5 +1,7 @@
 package weekly.w296;
 
+import java.util.ArrayList;
+
 /**
  * 6093. 设计一个文本编辑器：https://leetcode.cn/problems/design-a-text-editor/
  */
@@ -33,25 +35,21 @@ public class DesignATextEditor {
 
     static class TextEditor {
 
-        Node root, cur;
+        ArrayList<Character> left = new ArrayList<>(), right = new ArrayList<>();
 
         public TextEditor() {
-            root = cur = new Node();
-            root.prev = root;
-            root.next = root;
         }
 
         public void addText(String text) {
             for (int i = 0; i < text.length(); i++) {
-                cur = cur.insert(text.charAt(i));
+                left.add(text.charAt(i));
             }
         }
 
         public int deleteText(int k) {
             int p = k;
-            while (k > 0 && cur != root) {
-                cur = cur.prev;
-                cur.next.remove();
+            while (k > 0 && !left.isEmpty()) {
+                left.remove(left.size() - 1);
                 k--;
             }
             return p - k;
@@ -59,56 +57,26 @@ public class DesignATextEditor {
 
         String text() {
             StringBuilder result = new StringBuilder();
-            Node x = cur;
-            for (int k = 10; k > 0 && x != root; k--) {
-                result.append(x.val);
-                x = x.prev;
+            for (int i = Math.max(0, left.size() - 10); i < left.size(); i++) {
+                result.append(left.get(i));
             }
-            return result.reverse().toString();
+            return result.toString();
         }
 
         public String cursorLeft(int k) {
-            while (k > 0 && cur != root) {
-                cur = cur.prev;
+            while (k > 0 && !left.isEmpty()) {
+                right.add(left.remove(left.size() - 1));
                 k--;
             }
             return text();
         }
 
         public String cursorRight(int k) {
-            while (k > 0 && cur.next != root) {
-                cur = cur.next;
+            while (k > 0 && !right.isEmpty()) {
+                left.add(right.remove(right.size() - 1));
                 k--;
             }
             return text();
-        }
-
-        static class Node {
-            final char val;
-            Node prev, next;
-
-            Node() {
-                this((char) 0);
-            }
-
-            Node(char val) {
-                this.val = val;
-            }
-
-            Node insert(char val) { // 当前节点后面插入节点
-                Node node = new Node(val);
-                node.prev = this;
-                node.next = this.next;
-
-                this.next.prev = node;
-                this.next = node;
-                return node;
-            }
-
-            void remove() { // 移除当前节点
-                this.prev.next = this.next;
-                this.next.prev = this.prev;
-            }
         }
     }
 
