@@ -1,7 +1,5 @@
 package weekly.w297;
 
-import java.util.Arrays;
-
 import static util.ArrayUtils.matrix;
 
 /**
@@ -11,33 +9,23 @@ public class MinimumPathCostInAGrid {
 
     public static int minPathCost(int[][] grid, int[][] moveCost) {
         int m = grid.length, n = grid[0].length;
-        int[][] memo = new int[m][n];
-        for (int i = 0; i < m; i++) {
-            Arrays.fill(memo[i], -1);
+        int[][] dp = new int[m][n];
+        for (int i = 0; i < n; i++) {
+            dp[0][i] = grid[0][i];
+        }
+        for (int i = 1; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                dp[i][j] = Integer.MAX_VALUE;
+                for (int k = 0; k < n; k++) {
+                    dp[i][j] = Math.min(dp[i][j], grid[i][j] + dp[i - 1][k] + moveCost[grid[i - 1][k]][j]);
+                }
+            }
         }
         int ans = Integer.MAX_VALUE;
         for (int i = 0; i < n; i++) {
-            ans = Integer.min(ans, dfs(grid, moveCost, memo, 0, i));
+            ans = Integer.min(ans, dp[m - 1][i]);
         }
         return ans;
-    }
-
-    private static int dfs(int[][] grid, int[][] moveCost, int[][] memo, int row, int column) {
-        int m = grid.length, n = grid[0].length;
-        if (row == m - 1) {
-            return grid[row][column];
-        }
-        if (memo[row][column] != -1) {
-            return memo[row][column];
-        }
-        int v = Integer.MAX_VALUE;
-        for (int i = 0; i < n; i++) {
-            int c = grid[row][column] + moveCost[grid[row][column]][i]
-                + dfs(grid, moveCost, memo, row + 1, i);
-            v = Math.min(v, c);
-        }
-        memo[row][column] = v;
-        return v;
     }
 
     public static void main(String[] args) {
