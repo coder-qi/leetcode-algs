@@ -1,4 +1,4 @@
-import java.util.Arrays;
+import java.util.stream.IntStream;
 
 import static util.ArrayUtils.array;
 
@@ -8,13 +8,17 @@ import static util.ArrayUtils.array;
 public class HeightChecker {
 
     public static int heightChecker(int[] heights) {
-        int[] expected = new int[heights.length];
-        System.arraycopy(heights, 0, expected, 0, heights.length);
-        Arrays.sort(expected);
+        int max = IntStream.of(heights).max().getAsInt();
+        int[] count = new int[max + 1];
+        for (int h : heights) {
+            count[h]++;
+        }
         int ans = 0;
-        for (int i = 0; i < heights.length; i++) {
-            if (heights[i] != expected[i]) {
-                ans++;
+        for (int i = 0, pos = 0; i < count.length; i++) {
+            for (int j = 0; j < count[i]; j++) {
+                if (heights[pos++] != i) {
+                    ans++;
+                }
             }
         }
         return ans;
