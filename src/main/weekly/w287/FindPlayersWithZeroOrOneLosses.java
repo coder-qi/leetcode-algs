@@ -3,10 +3,8 @@ package weekly.w287;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static util.ArrayUtils.matrix;
 
@@ -16,30 +14,24 @@ import static util.ArrayUtils.matrix;
 public class FindPlayersWithZeroOrOneLosses {
 
     public static List<List<Integer>> findWinners(int[][] matches) {
-        Set<Integer> winners = new HashSet<>();
-        Map<Integer, Integer> losers = new HashMap<>();
+        Map<Integer, Integer> map = new HashMap<>();
         for (int[] match : matches) {
-            winners.add(match[0]);
-            losers.put(match[1], losers.getOrDefault(match[1], 0) + 1);
+            int winner = match[0], loser = match[1];
+            if (!map.containsKey(winner)) {
+                map.put(winner, 0);
+            }
+            map.put(loser, map.getOrDefault(loser, 0) + 1);
         }
         List<List<Integer>> ans = new ArrayList<>(2);
-        List<Integer> ans0 = new ArrayList<>();
-        ans.add(ans0);
-        for (int i : winners) {
-            if (!losers.containsKey(i)) {
-                ans0.add(i);
+        ans.add(new ArrayList<>());
+        ans.add(new ArrayList<>());
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            if (entry.getValue() < 2) {
+                ans.get(entry.getValue()).add(entry.getKey());
             }
         }
-        Collections.sort(ans0);
-
-        List<Integer> ans1 = new ArrayList<>();
-        ans.add(ans1);
-        for (Map.Entry<Integer, Integer> entry : losers.entrySet()) {
-            if (entry.getValue() == 1) {
-                ans1.add(entry.getKey());
-            }
-        }
-        Collections.sort(ans1);
+        Collections.sort(ans.get(0));
+        Collections.sort(ans.get(1));
         return ans;
     }
 
