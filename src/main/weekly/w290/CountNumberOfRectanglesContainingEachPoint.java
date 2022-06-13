@@ -16,22 +16,20 @@ public class CountNumberOfRectanglesContainingEachPoint {
 
     public static int[] countRectangles(int[][] rectangles, int[][] points) {
         int n = points.length;
-        Arrays.sort(rectangles, (a, b) -> b[1] - a[1]);
+        Arrays.sort(rectangles, (a, b) -> b[0] - a[0]);
         Integer[] ids = IntStream.range(0, n).boxed().toArray(Integer[]::new);
-        Arrays.sort(ids, (i, j) -> points[j][1] - points[i][1]);
+        Arrays.sort(ids, (i, j) -> points[j][0] - points[i][0]);
 
         int[] ans = new int[n];
-        List<Integer> xs = new ArrayList<>();
+        int[] cnt = new int[101];
         int i = 0;
         for (int id : ids) {
-            int start = i;
-            while (i < rectangles.length && rectangles[i][1] >= points[id][1]) {
-                xs.add(rectangles[i++][0]);
+            while (i < rectangles.length && rectangles[i][0] >= points[id][0]) {
+                cnt[rectangles[i++][1]]++;
             }
-            if (start != i) {
-                Collections.sort(xs);
+            for (int j = points[id][1]; j < cnt.length; j++) {
+                ans[id] += cnt[j];
             }
-            ans[id] = xs.size() - lowerBound(xs, points[id][0]);
         }
         return ans;
     }
