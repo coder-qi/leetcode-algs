@@ -3,7 +3,9 @@ package weekly.w290;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static util.ArrayUtils.matrix;
 
@@ -13,20 +15,23 @@ import static util.ArrayUtils.matrix;
 public class CountNumberOfRectanglesContainingEachPoint {
 
     public static int[] countRectangles(int[][] rectangles, int[][] points) {
-        // 分别统计每个Y轴刻度所对应的所有X轴的值，并排序
-        List<Integer>[] xs = new List[101];
-        Arrays.setAll(xs, ArrayList::new);
-        for (int[] rect : rectangles) {
-            xs[rect[1]].add(rect[0]);
-        }
-        for (List<Integer> x : xs) {
-            Collections.sort(x);
-        }
-        int[] ans = new int[points.length];
-        for (int i = 0; i < points.length; i++) {
-            for (int j = points[i][1]; j < 101; j++) {
-                ans[i] += xs[j].size() - lowerBound(xs[j], points[i][0]);
+        int n = points.length;
+        Arrays.sort(rectangles, (a, b) -> b[1] - a[1]);
+        Integer[] ids = IntStream.range(0, n).boxed().toArray(Integer[]::new);
+        Arrays.sort(ids, (i, j) -> points[j][1] - points[i][1]);
+
+        int[] ans = new int[n];
+        List<Integer> xs = new ArrayList<>();
+        int i = 0;
+        for (int id : ids) {
+            int start = i;
+            while (i < rectangles.length && rectangles[i][1] >= points[id][1]) {
+                xs.add(rectangles[i++][0]);
             }
+            if (start != i) {
+                Collections.sort(xs);
+            }
+            ans[id] = xs.size() - lowerBound(xs, points[id][0]);
         }
         return ans;
     }
