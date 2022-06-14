@@ -18,29 +18,15 @@ public class DiagonalTraverse {
             row += (up ? -1 : 1);
             column += (up ? 1 : -1);
             if (row < 0 || row == m || column < 0 || column == n) {
-                if (row < 0) {
-                    if (column == n) {
-                        row = 1;
-                        column = n - 1;
-                    } else {
-                        row = 0;
-                    }
-                } else if (column < 0) {
-                    if (row == m) {
-                        column = 1;
-                        row = m - 1;
-                    } else {
-                        column = 0;
-                    }
-                }
                 if (row == m) {
                     row = m - 1;
                     column += 2;
-                }
-                if (column == n) {
+                } else if (column == n) {
                     column = n - 1;
                     row += 2;
                 }
+                row = Math.max(0, row);
+                column = Math.max(0, column);
                 up = !up;
             }
         }
