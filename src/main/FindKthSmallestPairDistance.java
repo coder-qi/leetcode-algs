@@ -24,18 +24,11 @@ public class FindKthSmallestPairDistance {
 
     private static int count(int[] nums, int x) {
         int result = 0;
-        for (int i = 0; i < nums.length; i++) {
-            int left = 0, right = i;
-            int target = nums[i] - x;
-            while (left < right) {
-                int mid = (right - left) / 2 + left;
-                if (target > nums[mid]) {
-                    left = mid + 1;
-                } else {
-                    right = mid;
-                }
+        for (int right = 0, left = 0; right < nums.length; right++) {
+            while (nums[right] - nums[left] > x) {
+                left++;
             }
-            result += i - left;
+            result += right - left;
         }
         return result;
     }
