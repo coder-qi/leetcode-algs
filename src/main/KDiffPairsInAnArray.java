@@ -9,8 +9,8 @@ import static util.ArrayUtils.array;
 public class KDiffPairsInAnArray {
 
     public static int findPairs(int[] nums, int k) {
-        Set<Integer> res = new HashSet<>();
-        Set<Integer> visited = new HashSet<>();
+        Set<Integer> res = new HashSet<>(nums.length);
+        Set<Integer> visited = new HashSet<>(nums.length);
         for (int num : nums) {
             if (visited.contains(num - k)) {
                 res.add(num - k);
