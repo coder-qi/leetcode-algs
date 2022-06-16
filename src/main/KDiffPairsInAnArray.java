@@ -1,6 +1,5 @@
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import static util.ArrayUtils.array;
 
@@ -10,26 +9,18 @@ import static util.ArrayUtils.array;
 public class KDiffPairsInAnArray {
 
     public static int findPairs(int[] nums, int k) {
-        Arrays.sort(nums);
-        Map<Integer, Integer> map = new HashMap<>();
-        int ans = 0;
-        for (int i = 0; i < nums.length; i++) {
-            if (i > 0 && nums[i - 1] == nums[i] && k !=0) {
-                continue;
+        Set<Integer> res = new HashSet<>();
+        Set<Integer> visited = new HashSet<>();
+        for (int num : nums) {
+            if (visited.contains(num - k)) {
+                res.add(num - k);
             }
-            if (k == 0) {
-                if (map.getOrDefault(nums[i], 0) == 1) {
-                    ans++;
-                }
-            } else {
-                int target = nums[i] - k;
-                if (map.containsKey(target)) {
-                    ans++;
-                }
+            if (visited.contains(num + k)) {
+                res.add(num);
             }
-            map.put(nums[i], map.getOrDefault(nums[i], 0) + 1);
+            visited.add(num);
         }
-        return ans;
+        return res.size();
     }
 
     public static void main(String[] args) {
