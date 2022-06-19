@@ -2,8 +2,6 @@ package weekly.w286;
 
 import java.util.Arrays;
 
-import util.ArrayUtils;
-
 import static util.ArrayUtils.array;
 
 /**
@@ -11,56 +9,26 @@ import static util.ArrayUtils.array;
  */
 public class FindPalindromeWithFixedLength {
 
-    static final int[] count = new int[16];
-    static {
-        count[0] = 1;
-        count[1] = 10;
-        count[2] = 9;
-        for (int i = 3; i <= 15; i++) {
-            if (i % 2 == 0) {
-                count[i] = count[i - 1];
-            } else {
-                count[i] = count[i - 2] * 9;
-            }
-        }
-    }
 
     public static long[] kthPalindrome(int[] queries, int intLength) {
         int n = queries.length;
-        long[] result = new long[n];
-        int[] arr = new int[intLength];
+        int len = (intLength + 1) / 2;
+        int start = (int) (Math.pow(10, len - 1) - 1), limit = (int) (Math.pow(10, len) - 1);
+        long[] ans = new long[n];
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < n; i++) {
-            int k = queries[i];
-            if (k > count[intLength]) {
-                result[i] = -1;
-                continue;
-            }
-            for (int j = intLength; j >= (intLength + 1) / 2 + (intLength % 2 == 0 ? 1 : 0); j--) {
-                if (j > 2) {
-                    if (k % count[j - 2] == 0) {
-                        for (int l = j; l >= (intLength + 1) / 2; l--) {
-                            arr[intLength - l] = arr[l - 1] = 9;
-                        }
-                        break;
-                    }
-                    k %= count[j - 2];
-                    int p = k / count[j - 2] + 1;
-                    arr[intLength - j] = arr[j - 1] = p;
-                } else if (k != 0) {
-                    if (k <= 9) {
-                        arr[j - 1] = k - 1;
-                    } else {
-                        arr[intLength - j] = arr[j - 1] = k % 10;
-                    }
+            if (start + queries[i] > limit) {
+                ans[i] = -1;
+            } else {
+                sb.setLength(0);
+                sb.append(start + queries[i]);
+                for (int j = intLength - len - 1; sb.length() < intLength; j--) {
+                    sb.append(sb.charAt(j));
                 }
+                ans[i] = Long.valueOf(sb.toString());
             }
-            int v = 0;
-            for (int j = 0; j < intLength; j++) {
-                v = v * 10 + arr[j];
-            }
-            result[i] = v;
         }
-        return result;
+        return ans;
     }
 
     public static void main(String[] args) {
