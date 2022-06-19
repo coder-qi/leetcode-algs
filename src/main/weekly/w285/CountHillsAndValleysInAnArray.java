@@ -18,11 +18,11 @@ public class CountHillsAndValleysInAnArray {
             }
             if (j < n) {
                 if (nums[i] > nums[i - 1]) {
-                    if (j < n && nums[i] > nums[j]) {
+                    if (nums[i] > nums[j]) {
                         ans++;
                     }
                 } else {
-                    if (j < n && nums[i] < nums[j]) {
+                    if (nums[i] < nums[j]) {
                         ans++;
                     }
                 }
