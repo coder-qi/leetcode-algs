@@ -1,3 +1,6 @@
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 import util.TreeNode;
 
 /**
@@ -5,23 +8,24 @@ import util.TreeNode;
  */
 public class FindBottomLeftTreeValue {
 
-    int ans, level;
-
     public int findBottomLeftValue(TreeNode root) {
-        dfs(root, 1);
+        Deque<TreeNode> q = new ArrayDeque<>();
+        int ans = 0;
+        q.offer(root);
+        while (!q.isEmpty()) {
+            int count = q.size();
+            for (int i = 0; i < count; i++) {
+                TreeNode x = q.poll();
+                if (x.right != null) {
+                    q.offer(x.right);
+                }
+                if (x.left != null) {
+                    q.offer(x.left);
+                }
+                ans = x.val;
+            }
+        }
         return ans;
-    }
-
-    private void dfs(TreeNode root, int level) {
-        if (root == null) {
-            return;
-        }
-        if (level > this.level) {
-            this.level = level;
-            ans = root.val;
-        }
-        dfs(root.left, level + 1);
-        dfs(root.right, level + 1);
     }
 
     public static void main(String[] args) {
