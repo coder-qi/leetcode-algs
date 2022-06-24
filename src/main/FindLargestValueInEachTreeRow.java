@@ -1,6 +1,4 @@
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.List;
 
 import util.TreeNode;
@@ -12,29 +10,22 @@ public class FindLargestValueInEachTreeRow {
 
     public List<Integer> largestValues(TreeNode root) {
         List<Integer> result = new ArrayList<>();
-        if (root == null) {
-            return result;
-        }
-        Deque<TreeNode> q = new ArrayDeque<>();
-        q.offer(root);
-        while (!q.isEmpty()) {
-            int count = q.size();
-            int max = Integer.MIN_VALUE;
-            for (int i = 0; i < count; i++) {
-                TreeNode x = q.poll();
-                max = Math.max(max, x.val);
-                if (x.left != null) {
-                    q.offer(x.left);
-                }
-                if (x.right != null) {
-                    q.offer(x.right);
-                }
-            }
-            result.add(max);
-        }
+        dfs(root, result, 0);
         return result;
     }
 
+    private void dfs(TreeNode root, List<Integer> result, int level) {
+        if (root == null) {
+            return;
+        }
+        if (result.size() == level) {
+            result.add(root.val);
+        } else {
+            result.set(level, Integer.max(result.get(level), root.val));
+        }
+        dfs(root.left, result, level + 1);
+        dfs(root.right, result, level + 1);
+    }
 
     public static void main(String[] args) {
 
