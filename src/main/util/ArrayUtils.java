@@ -71,6 +71,9 @@ public class ArrayUtils {
     public static int[][] matrix(String s) {
         s = s.trim();
         s = s.substring(1, s.length() - 1);
+        if (s.isEmpty()) {
+            return new int[][] {};
+        }
         String[] items = s.split("\\]\\s*,\\s*");
         int[][] result = new int[items.length][];
         for (int i = 0; i < items.length; i++) {
