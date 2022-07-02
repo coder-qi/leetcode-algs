@@ -8,12 +8,13 @@ public class CountNumberOfWaysToPlaceHouses {
     static final int MOD = (int) (1e9 + 7);
 
     public static int countHousePlacements(int n) {
-        int[] dp = new int[n + 2];
-        dp[0] = dp[1] = 1;
-        for (int i = 2; i < n + 2; i++) {
-            dp[i] = (dp[i - 1] + dp[i - 2]) % MOD;
+        int prev = 1, next = 1;
+        for (int i = 0; i < n; i++) {
+            int oldNext = next;
+            next = (prev + next) % MOD;
+            prev = oldNext;
         }
-        return (int) ((dp[n + 1] * (long)dp[n + 1]) % MOD);
+        return (int) ((next * (long)next) % MOD);
     }
 
     public static void main(String[] args) {
