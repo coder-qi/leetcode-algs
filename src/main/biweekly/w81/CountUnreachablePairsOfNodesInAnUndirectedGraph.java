@@ -1,7 +1,7 @@
 package biweekly.w81;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import static util.ArrayUtils.matrix;
 
@@ -10,65 +10,53 @@ import static util.ArrayUtils.matrix;
  */
 public class CountUnreachablePairsOfNodesInAnUndirectedGraph {
 
-    public static long countPairs(int n, int[][] edges) {
-        UnionFind uf = new UnionFind(n);
-        for (int i = 0; i < edges.length; i++) {
-            uf.union(edges[i][0], edges[i][1]);
-        }
-        Map<Integer, Integer> unionSize = new HashMap<>();
+    List<List<Integer>> graph;
+    boolean[] vis;
+
+    public long countPairs(int n, int[][] edges) {
+        graph = new ArrayList<>(n);
         for (int i = 0; i < n; i++) {
-            int p = uf.find(i);
-            unionSize.put(p, unionSize.getOrDefault(p, 0) + 1);
+            graph.add(new ArrayList<>());
         }
+        for (int i = 0; i < edges.length; i++) {
+            graph.get(edges[i][0]).add(edges[i][1]);
+            graph.get(edges[i][1]).add(edges[i][0]);
+        }
+        vis = new boolean[n];
+
         long ans = 0;
-        int count = 0;
-        for (int size : unionSize.values()) {
-            ans += size * (long)count;
-            count += size;
+        long s = 0;
+        for (int i = 0; i < n; i++) {
+            if (!vis[i]) {
+                int count = dfs(i);
+                ans += s * count;
+                s += count;
+            }
         }
+
         return ans;
     }
 
-    static class UnionFind {
-        int[] parent;
-        int[] rank;
-
-        public UnionFind(int n) {
-            parent = new int[n];
-            for (int i = 0; i < n; i++) {
-                parent[i] = i;
-            }
-            rank = new int[n];
+    private int dfs(int v) {
+        if (vis[v]) {
+            return 0;
         }
-
-        public int find(int i) {
-            if (parent[i] != i) {
-                parent[i] = find(parent[i]);
-            }
-            return parent[i];
+        vis[v] = true;
+        int count = 1;
+        for (int w : graph.get(v)) {
+            count += dfs(w);
         }
+        return count;
+    }
 
-        public void union(int x, int y) {
-            int rootX = find(x);
-            int rootY = find(y);
-            if (rootX != rootY) {
-                if (rank[rootX] > rank[rootY]) {
-                    parent[rootY] = rootX;
-                    rank[rootX] += rank[rootY];
-                } else if (rank[rootX] < rank[rootY]) {
-                    parent[rootX] = rootY;
-                    rank[rootY] += rank[rootX];
-                } else {
-                    parent[rootY] = rootX;
-                    rank[rootX]++;
-                }
-            }
-        }
+    static long slove(int n, int[][] edges) {
+        CountUnreachablePairsOfNodesInAnUndirectedGraph g = new CountUnreachablePairsOfNodesInAnUndirectedGraph();
+        return g.countPairs(n, edges);
     }
 
     public static void main(String[] args) {
-        System.out.println(countPairs(3, matrix("[[0,1],[0,2],[1,2]]"))); // 0
-        System.out.println(countPairs(7, matrix("[[0,2],[0,5],[2,4],[1,6],[5,4]]"))); // 14
+        System.out.println(slove(3, matrix("[[0,1],[0,2],[1,2]]"))); // 0
+        System.out.println(slove(7, matrix("[[0,2],[0,5],[2,4],[1,6],[5,4]]"))); // 14
     }
 
 }
