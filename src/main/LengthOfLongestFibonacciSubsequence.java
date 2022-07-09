@@ -13,21 +13,15 @@ public class LengthOfLongestFibonacciSubsequence {
         for (int i = 0; i < n; i++) {
             map.put(arr[i], i);
         }
+        int[][] dp = new int[n][n];
         int ans = 0;
-        for (int i = 0; i < n - 2; i++) {
-            for (int j = i + 1; j < n - 1; j++) {
-                int len = 0;
-                int first = i, second = j;
-                while (second < n - 1) {
-                    int target = arr[first] + arr[second];
-                    if (!map.containsKey(target)) {
-                        break;
-                    }
-                    first = second;
-                    second = map.get(target);
-                    len = len == 0 ? 3 : len + 1;
-                    ans = Math.max(ans, len);
+        for (int i = 0; i < n; i++) {
+            for (int j = i - 1; j >= 0 && arr[j] * 2 > arr[i]; j--) {
+                int k = map.getOrDefault(arr[i] - arr[j], -1);
+                if (k >= 0) {
+                    dp[j][i] = Math.max(dp[k][j] + 1, 3);
                 }
+                ans = Math.max(ans, dp[j][i]);
             }
         }
         return ans;
