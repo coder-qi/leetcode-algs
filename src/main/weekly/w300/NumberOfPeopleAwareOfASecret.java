@@ -1,8 +1,5 @@
 package weekly.w300;
 
-import java.util.ArrayDeque;
-import java.util.Queue;
-
 /**
  * 2327. 知道秘密的人数：https://leetcode.cn/problems/number-of-people-aware-of-a-secret/
  */
@@ -11,38 +8,15 @@ public class NumberOfPeopleAwareOfASecret {
     static final int MOD = (int) (1e9 + 7);
 
     public static int peopleAwareOfSecret(int n, int delay, int forget) {
-        Queue<Long> delayQ = new ArrayDeque<>(),
-            propagationQ = new ArrayDeque<>();
-        long delayCount = 1, propagationCount = 0;
-        delayQ.offer(1L);
+        int[] sum = new int[n + 1];
+        sum[1] = 1;
         for (int i = 2; i <= n; i++) {
-            long count = 0;
-            if (delayQ.size() == delay) {
-                count = delayQ.poll();
-                delayCount -= count;
-                if (delayCount < 0) {
-                    delayCount += MOD;
-                }
-            }
-
-            propagationQ.offer(count);
-            propagationCount = (propagationCount + count) % MOD;
-            if (propagationQ.size() > forget - delay) {
-                propagationCount -= propagationQ.poll();
-                if (propagationCount < 0) {
-                    propagationCount += MOD;
-                }
-            }
-
-            delayCount = (delayCount + propagationCount) % MOD;
-            delayQ.offer(propagationCount);
+            int right = Math.max(0, i - delay);
+            int left = Math.max(0, i - forget);
+            int f = (sum[right] - sum[left]) % MOD;
+            sum[i] = (sum[i - 1] + f) % MOD;
         }
-        long ans = delayCount + propagationCount;
-        if (ans < 0) {
-            ans += MOD;
-        }
-        ans %= MOD;
-        return (int) ans;
+        return ((sum[n] - sum[Math.max(0, n - forget)]) % MOD + MOD) % MOD;
     }
 
     public static void main(String[] args) {
