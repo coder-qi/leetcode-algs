@@ -21,44 +21,59 @@ public class ImplementMagicDictionary {
 
 class MagicDictionary {
 
-    Set<String> dict;
-    Map<Integer, Set<Character>[]> charMap;
+    Trie root;
 
     public MagicDictionary() {
+        root = new Trie();
     }
 
     public void buildDict(String[] dictionary) {
-        dict = Set.of(dictionary);
-        charMap = new HashMap<>();
-        for (String s : dictionary) {
-            Set<Character>[] chars = charMap.computeIfAbsent(s.length(), k -> new Set[s.length()]);
-            for (int i = 0; i < s.length(); i++) {
-                if (chars[i] == null) {
-                    chars[i] = new HashSet<>();
+        for (String word : dictionary) {
+            Trie x = root;
+            for (int i = 0; i < word.length(); i++) {
+                char ch = word.charAt(i);
+                int idx = ch - 'a';
+                if (x.child[idx] == null) {
+                    x.child[idx] = new Trie();
                 }
-                chars[i].add(s.charAt(i));
+                x = x.child[idx];
             }
+            x.finished = true;
         }
     }
 
     public boolean search(String searchWord) {
-        Set<Character>[] chars = charMap.get(searchWord.length());
-        if (chars == null) {
-            return false;
+        return dfs(searchWord, root, 0, false);
+    }
+
+    private boolean dfs(String searchWord, Trie node, int pos, boolean modified) {
+        if (pos == searchWord.length()) {
+            return modified && node.finished;
         }
-        for (int i = 0; i < searchWord.length(); i++) {
-            for (char ch : chars[i]) {
-                if (ch != searchWord.charAt(i)) {
-                    String replaceWord = searchWord.substring(0, i) + ch;
-                    if (searchWord.length() > 1) {
-                        replaceWord += searchWord.substring(i + 1);
-                    }
-                    if (dict.contains(replaceWord)) {
+        int idx = searchWord.charAt(pos) - 'a';
+        if (node.child[idx] != null) {
+            if (dfs(searchWord, node.child[idx], pos + 1, modified)) {
+                return true;
+            }
+        }
+        if (!modified) {
+            for (int i = 0; i < node.child.length; i++) {
+                if (i != idx && node.child[i] != null) {
+                    if (dfs(searchWord, node.child[i], pos + 1, true)) {
                         return true;
                     }
                 }
             }
         }
         return false;
+    }
+
+    static class Trie {
+        boolean finished;
+        Trie[] child;
+
+        Trie() {
+            child = new Trie[26];
+        }
     }
 }
