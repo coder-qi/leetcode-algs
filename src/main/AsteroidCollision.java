@@ -1,4 +1,5 @@
 import java.util.ArrayDeque;
+import java.util.Arrays;
 import java.util.Deque;
 
 /**
@@ -9,17 +10,14 @@ public class AsteroidCollision {
     public static int[] asteroidCollision(int[] asteroids) {
         ArrayDeque<Integer> stack = new ArrayDeque<>();
         for (int i = 0; i < asteroids.length; i++) {
-            if (!stack.isEmpty() && isSignDifference(stack.peek(), asteroids[i])) {
-                while (!stack.isEmpty() && stack.peek() < Math.abs(asteroids[i])) {
-                    stack.pop();
-                }
-                if (stack.isEmpty()) {
-                    stack.push(asteroids[i]);
-                } else if (stack.peek() == Math.abs(asteroids[i])) {
-                    stack.pop();
-                }
-            } else {
+            while (!stack.isEmpty() && (stack.peek() > 0 && asteroids[i] < 0)
+                    && Math.abs(stack.peek()) < Math.abs(asteroids[i])) {
+                stack.pop();
+            }
+            if (stack.isEmpty() || !(stack.peek() > 0 && asteroids[i] < 0) ) {
                 stack.push(asteroids[i]);
+            } else if (Math.abs(stack.peek()) == Math.abs(asteroids[i])) {
+                stack.pop();
             }
         }
         int[] ans = new int[stack.size()];
@@ -29,12 +27,8 @@ public class AsteroidCollision {
         return ans;
     }
 
-    private static boolean isSignDifference(int i, int j) {
-        return (i > 0 && j < 0) || (i < 0 && j > 0);
-    }
-
     public static void main(String[] args) {
-
+        System.out.println(Arrays.toString(asteroidCollision(new int[] {5,10,-5}))); // [5,10]
     }
 
 }
