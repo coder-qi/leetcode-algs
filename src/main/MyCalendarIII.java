@@ -1,6 +1,3 @@
-import java.util.Map;
-import java.util.TreeMap;
-
 /**
  * 732. 我的日程安排表 III：https://leetcode.cn/problems/my-calendar-iii/
  */
@@ -16,24 +13,63 @@ public class MyCalendarIII {
         myCalendarThree.book(25, 55); // 返回 3
     }
 
-    static class MyCalendarThree {
+}
 
-        Map<Integer, Integer> count = new TreeMap<>();
+class MyCalendarThree {
 
-        public MyCalendarThree() {
-        }
 
-        public int book(int start, int end) {
-            count.put(start, count.getOrDefault(start, 0) + 1);
-            count.put(end, count.getOrDefault(end, 0) - 1);
-            int ans = 0;
-            int maxBook = 0;
-            for (Map.Entry<Integer, Integer> entry : count.entrySet()) {
-                maxBook += entry.getValue();
-                ans = Math.max(ans, maxBook);
-            }
-            return ans;
-        }
+    public MyCalendarThree() {
     }
 
+    public int book(int start, int end) {
+        update(root, 0, N, start, end - 1, 1);
+        return root.val;
+    }
+
+    static final int N = (int) 1e9;
+
+    static class Node {
+        Node left, right;
+        int val, add;
+    }
+
+    Node root = new Node();
+
+    void update(Node node, int start, int end, int l, int r, int val) {
+        if (l <= start && end <= r) {
+            node.val += val;
+            node.add += val;
+            return;
+        }
+        pushDown(node);
+        int mid = (start + end) >> 1;
+        if (l <= mid) {
+            update(node.left, start, mid, l, r, val);
+        }
+        if (r > mid) {
+            update(node.right, mid + 1, end, l, r, val);
+        }
+        pullUp(node);
+    }
+
+    private void pullUp(Node node) {
+        node.val = Math.max(node.left.val, node.right.val);
+    }
+
+    private void pushDown(Node node) {
+        if (node.left == null) {
+            node.left = new Node();
+        }
+        if (node.right == null) {
+            node.right = new Node();
+        }
+        if (node.add == 0) {
+            return;
+        }
+        node.left.val += node.add;
+        node.right.val += node.add;
+        node.left.add += node.add;
+        node.right.add += node.add;
+        node.add = 0;
+    }
 }
