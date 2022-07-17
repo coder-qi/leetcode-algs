@@ -11,21 +11,20 @@ import util.ArrayUtils;
 public class QueryKthSmallestTrimmedNumber {
 
     public static int[] smallestTrimmedNumbers(String[] nums, int[][] queries) {
-        String[][] arr = new String[nums.length][2];
+        int n = nums.length;
+        String[] indexes = new String[n];
+        for (int i = 0; i < n; i++) {
+            indexes[i] = i < 10 ? "0" + i : String.valueOf(i);
+        }
+        String[] arr = new String[n];
         int[] ans = new int[queries.length];
         for (int i = 0; i < queries.length; i++) {
             int k = queries[i][0], trim = queries[i][1];
-            for (int j = 0; j < arr.length; j++) {
-                arr[j][0] = nums[j].substring(nums[j].length() - trim);
-                arr[j][1] = String.valueOf(j);
+            for (int j = 0; j < n; j++) {
+                arr[j] = nums[j].substring(nums[j].length() - trim) + indexes[j];
             }
-            Arrays.sort(arr, (a, b) -> {
-                if (a[0].compareTo(b[0]) == 0) {
-                    return Long.compare(Integer.valueOf(a[1]), Integer.valueOf(b[1]));
-                }
-                return a[0].compareTo(b[0]);
-            });
-            ans[i] = Integer.valueOf(arr[k - 1][1]);
+            Arrays.sort(arr);
+            ans[i] = Integer.valueOf(arr[k - 1].substring(arr[k - 1].length() - 2));
         }
         return ans;
     }
