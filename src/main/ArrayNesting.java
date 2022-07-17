@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 /**
  * 565. 数组嵌套：https://leetcode.cn/problems/array-nesting/
  */
@@ -7,21 +5,17 @@ public class ArrayNesting {
 
     public static int arrayNesting(int[] nums) {
         int ans = 0;
-        int[] memo = new int[nums.length];
-        Arrays.fill(memo, -1);
+        boolean[] vis = new boolean[nums.length];
         for (int i = 0; i < nums.length; i++) {
-            ans = Math.max(ans, dfs(nums, memo, i));
+            int count = 0;
+            while (!vis[i]) {
+                vis[i] = true;
+                i = nums[i];
+                count++;
+            }
+            ans = Math.max(ans, count);
         }
         return ans;
-    }
-
-    private static int dfs(int[] nums, int[] memo, int index) {
-        if (memo[index] != -1) {
-            return memo[index];
-        }
-        memo[index] = 0;
-        memo[index]  = 1 + dfs(nums, memo, nums[index]);
-        return memo[index];
     }
 
     public static void main(String[] args) {
