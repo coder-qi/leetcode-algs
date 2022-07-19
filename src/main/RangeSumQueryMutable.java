@@ -7,52 +7,87 @@ public class RangeSumQueryMutable {
         NumArray numArray = new NumArray(new int[] {1, 3, 5});
         System.out.println(numArray.sumRange(0, 2)); // 返回 1 + 3 + 5 = 9
         numArray.update(1, 2);   // nums = [1,2,5]
-        System.out.println(numArray.sumRange(0, 2));; // 返回 1 + 2 + 5 = 8
+        System.out.println(numArray.sumRange(0, 2)); // 返回 1 + 2 + 5 = 8
     }
 
 }
 
 class NumArray {
 
-    int[] nums, sum;
-    int size;
-
     public NumArray(int[] nums) {
-        this.nums = nums;
-        int n = nums.length;
-        size = (int) Math.sqrt(n);
-        sum = new int[(n + size - 1) / size];
-        for (int i = 0; i < n; i++) {
-            sum[i / size] += nums[i];
+        n = nums.length - 1;
+        for (int i = 0; i <= n; i++) {
+            update(root, 0, n, i, i, nums[i]);
         }
     }
 
     public void update(int index, int val) {
-        sum[index / size] += val - nums[index];
-        nums[index] = val;
+        update(root, 0, n, index, index, val);
     }
 
     public int sumRange(int left, int right) {
-        int b1 = left / size, i1 = left % size, b2 = right / size, i2 = right % size;
-        if (b1 == b2) {
-            int sum = 0;
-            for (int i = i1; i <= i2; i++) {
-                sum += nums[b1 * size + i];
-            }
-            return sum;
+        return query(root, 0, n, left, right);
+    }
+
+    Node root = new Node();
+    int n;
+
+    static class Node {
+        Node left, right;
+        int val, add;
+    }
+
+    void update(Node node, int start, int end, int l, int r, int val) {
+        if (l <= start && end <= r) {
+            node.add += (end - start + 1) * val;
+            node.val = val;
+            return;
         }
-        int sum1 = 0;
-        for (int i = i1; i < size; i++) {
-            sum1 += nums[b1 * size + i];
+        int mid = (start + end) >> 1;
+        pushDown(node, mid - start + 1, end - mid);
+        if (l <= mid) {
+            update(node.left, start, mid, l, r, val);
         }
-        int sum2 = 0;
-        for (int i = 0; i <= i2; i++) {
-            sum2 += nums[b2 * size + i];
+        if (mid < r) {
+            update(node.right, mid + 1, end, l, r, val);
         }
-        int sum3 = 0;
-        for (int i = b1 + 1; i < b2; i++) {
-            sum3 += sum[i];
+        pullUp(node);
+    }
+
+    int query(Node node, int start, int end, int l, int r) {
+        if (l <= start && end <= r) {
+            return node.val;
         }
-        return sum1 + sum2 + sum3;
+        int mid = (start + end) >> 1;
+        pushDown(node, mid - start + 1, end - mid);
+        int ans = 0;
+        if (l <= mid) {
+            ans += query(node.left, start, mid, l, r);
+        }
+        if (mid < r) {
+            ans += query(node.right, mid + 1, end, l, r);
+        }
+        return ans;
+    }
+
+    private void pullUp(Node node) {
+        node.val = node.left.val + node.right.val;
+    }
+
+    private void pushDown(Node node, int leftSum, int rightSum) {
+        if (node.left == null) {
+            node.left = new Node();
+        }
+        if (node.right == null) {
+            node.right = new Node();
+        }
+        if (node.add == 0) {
+            return;
+        }
+        node.left.val = leftSum * node.add;
+        node.right.val = rightSum * node.add;
+        node.left.add = node.add;
+        node.right.add = node.add;
+        node.add = 0;
     }
 }
