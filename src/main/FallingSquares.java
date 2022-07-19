@@ -10,43 +10,85 @@ import util.ArrayUtils;
  */
 public class FallingSquares {
 
-    public static List<Integer> fallingSquares(int[][] positions) {
+    public List<Integer> fallingSquares(int[][] positions) {
         int n = positions.length;
         List<Integer> heights = new ArrayList<>();
-        TreeMap<Integer, Integer> heightMap = new TreeMap<>();
-        heightMap.put(0, 0);
         for (int i = 0; i < n; i++) {
-            int left = positions[i][0], right = left + positions[i][1] - 1;
-            int sideLength = positions[i][1];
-            int rHeight = heightMap.floorEntry(right + 1).getValue();
-
-            // 第i块方块堆积的高度
-            int height = 0;
-            Map.Entry<Integer, Integer> lower;
-            while ((lower = heightMap.floorEntry(right)) != null) {
-                height = Math.max(height, lower.getValue());
-                if (lower.getKey() >= left) {
-                    heightMap.remove(lower.getKey()); // 清除[left, right]范围内的height
-                }
-                if (lower.getKey() <= left) {
-                    break;
-                }
-            }
-            height += sideLength;
-
-            heightMap.put(left, height);
-            if (!heightMap.containsKey(right + 1)) {
-                heightMap.put(right + 1, rHeight);
-            }
-            heights.add(i > 0 ? Math.max(heights.get(i - 1), height) : height);
+            int left = positions[i][0], sideLength = positions[i][1];
+            int cur = query(root, 0, N, left, left + sideLength - 1);
+            update(root, 0, N, left, left + sideLength - 1, cur + sideLength);
+            heights.add(root.val);
         }
         return heights;
     }
 
+    static final int N = (int) 1e9;
+
+    Node root = new Node();
+
+    static class Node {
+        Node left, right;
+        int add, val;
+    }
+
+    int query(Node node, int start, int end, int l, int r) {
+        if (l <= start && end <= r) {
+            return node.val;
+        }
+        int mid = (start + end) >> 1;
+        pushDown(node, mid - start + 1, end - mid);
+        int ans = 0;
+        if (l <= mid) {
+            ans = query(node.left, start, mid, l, r);
+        }
+        if (mid < r) {
+            ans = Math.max(ans, query(node.right, mid + 1, end, l, r));
+        }
+        return ans;
+    }
+
+    void update(Node node, int start, int end, int l, int r, int val) {
+        if (l <= start && end <= r) {
+            node.add = val;
+            node.val = val;
+            return;
+        }
+        int mid = (start + end) >> 1;
+        pushDown(node, mid - start + 1, end - mid);
+        if (l <= mid) {
+            update(node.left, start, mid, l, r, val);
+        }
+        if (mid < r) {
+            update(node.right, mid + 1, end, l, r, val);
+        }
+        pullUp(node);
+    }
+
+    void pushDown(Node node, int leftSum, int rightSum) {
+        if (node.left == null) {
+            node.left = new Node();
+        }
+        if (node.right == null) {
+            node.right = new Node();
+        }
+        if (node.add == 0) {
+            return;
+        }
+        node.left.val = node.add;
+        node.right.val = node.add;
+        node.left.add = node.add;
+        node.right.add = node.add;
+        node.add = 0;
+    }
+
+    void pullUp(Node node) {
+        node.val = Math.max(node.left.val, node.right.val);
+    }
+
     public static void main(String[] args) {
-        System.out.println(fallingSquares(ArrayUtils.matrix("[[1,2],[2,3],[6,1]]"))); // [2, 5, 5]
-        System.out.println(fallingSquares(ArrayUtils.matrix("[[100, 100], [200, 100]]"))); // [100, 100]
-        System.out.println(fallingSquares(ArrayUtils.matrix("[[9,1],[6,5],[6,7]]"))); // [1,6,13]
+        System.out.println(new FallingSquares().fallingSquares(ArrayUtils.matrix("[[1,2],[2,3],[6,1]]"))); // [2, 5, 5]
+        System.out.println(new FallingSquares().fallingSquares(ArrayUtils.matrix("[[100, 100], [200, 100]]"))); // [100, 100]
+        System.out.println(new FallingSquares().fallingSquares(ArrayUtils.matrix("[[9,1],[6,5],[6,7]]"))); // [1,6,13]
     }
 
 }
