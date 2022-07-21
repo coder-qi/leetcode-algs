@@ -1,7 +1,7 @@
 package weekly.w287;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 2306. 公司命名：https://leetcode.cn/problems/naming-a-company/
@@ -9,33 +9,31 @@ import java.util.Set;
 public class NamingACompany {
 
     public static long distinctNames(String[] ideas) {
-        Set<String> ideaSet = new HashSet<>();
+        Map<String, Integer> group = new HashMap<>();
         for (String idea : ideas) {
-            ideaSet.add(idea);
-        }
-        int[][] count = new int[26][26];
-        StringBuilder temp = new StringBuilder();
-        for (String idea : ideas) {
-            int i = idea.charAt(0) - 'a';
-            temp.setLength(0);
-            temp.append(idea);
-            for (int j = 0; j < 26; j++) {
-                if (i == j) {
-                    continue;
-                }
-                temp.setCharAt(0, (char) (j + 'a'));
-                if (!ideaSet.contains(temp.toString())) {
-                    count[i][j]++;
-                }
-            }
+            String s = idea.substring(1);
+            group.put(s, group.getOrDefault(s, 0) | 1 << (idea.charAt(0) - 'a'));
         }
         long ans = 0;
-        for (int i = 0; i < 26; i++) {
-            for (int j = 0; j < 26; j++) {
-                ans += count[i][j] * count[j][i];
+        int[][] count = new int[26][26];
+        for (int mask : group.values()) {
+            for (int i = 0; i < 26; i++) {
+                if ((mask >> i & 1) != 0) {
+                    for (int j = 0; j < 26; j++) {
+                        if ((mask >> j & 1) == 0) {
+                            count[i][j]++;
+                        }
+                    }
+                } else {
+                    for (int j = 0; j < 26; j++) {
+                        if ((mask >> j & 1) != 0) {
+                            ans += count[i][j];
+                        }
+                    }
+                }
             }
         }
-        return ans;
+        return ans * 2;
     }
 
     public static void main(String[] args) {
