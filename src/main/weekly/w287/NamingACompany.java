@@ -10,27 +10,26 @@ public class NamingACompany {
 
     public static long distinctNames(String[] ideas) {
         Map<String, Integer> group = new HashMap<>();
+        int[][] bad = new int[26][26];
+        int[] size = new int[26];
         for (String idea : ideas) {
-            String s = idea.substring(1);
-            group.put(s, group.getOrDefault(s, 0) | 1 << (idea.charAt(0) - 'a'));
+            int index = idea.charAt(0) - 'a';
+            String t = idea.substring(1);
+            int mask = group.getOrDefault(t, 0);
+            group.put(t, mask | 1 << index);
+
+            size[index]++;
+            for (int j = 0; j < 26; j++) {
+                if ((mask >> j & 1) != 0) {
+                    bad[index][j]++;
+                    bad[j][index]++;
+                }
+            }
         }
         long ans = 0;
-        int[][] count = new int[26][26];
-        for (int mask : group.values()) {
-            for (int i = 0; i < 26; i++) {
-                if ((mask >> i & 1) != 0) {
-                    for (int j = 0; j < 26; j++) {
-                        if ((mask >> j & 1) == 0) {
-                            count[i][j]++;
-                        }
-                    }
-                } else {
-                    for (int j = 0; j < 26; j++) {
-                        if ((mask >> j & 1) != 0) {
-                            ans += count[i][j];
-                        }
-                    }
-                }
+        for (int i = 1; i < 26; i++) {
+            for (int j = 0; j < i; j++) {
+                ans += (long) (size[i] - bad[i][j]) * (size[j] - bad[i][j]);
             }
         }
         return ans * 2;
