@@ -1,5 +1,5 @@
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.ArrayList;
+import java.util.List;
 
 import util.TreeNode;
 
@@ -13,29 +13,28 @@ public class MaximumLevelSumOfABinaryTree {
     }
 
     public static int maxLevelSum(TreeNode root) {
-        Deque<TreeNode> q = new ArrayDeque<>();
-        q.offer(root);
-        int level = 1, ansLevel = 1, maxSum = Integer.MIN_VALUE;
-        while (!q.isEmpty()) {
-            int size = q.size();
-            int sum = 0;
-            for (int i = 0; i < size; i++) {
-                TreeNode x = q.poll();
-                sum += x.val;
-                if (x.left != null) {
-                    q.offer(x.left);
-                }
-                if (x.right != null) {
-                    q.offer(x.right);
-                }
+        List<Integer> levelSums = new ArrayList<>();
+        dfs(root, 1, levelSums);
+        int ansLevel = 1, maxSum = Integer.MIN_VALUE;
+        for (int i = 1; i <= levelSums.size(); i++) {
+            if (levelSums.get(i - 1) > maxSum) {
+                ansLevel = i;
+                maxSum = levelSums.get(i - 1);
             }
-            if (sum > maxSum) {
-                maxSum = sum;
-                ansLevel = level;
-            }
-            level++;
         }
         return ansLevel;
+    }
+
+    private static void dfs(TreeNode root, int level, List<Integer> levelSums) {
+        if (root == null) {
+            return;
+        }
+        if (level > levelSums.size()) {
+            levelSums.add(0);
+        }
+        levelSums.set(level - 1, levelSums.get(level - 1) + root.val);
+        dfs(root.left, level + 1, levelSums);
+        dfs(root.right, level + 1, levelSums);
     }
 
 }
