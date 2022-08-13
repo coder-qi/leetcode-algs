@@ -1,6 +1,5 @@
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 /**
  * 768. 最多能完成排序的块 II：https://leetcode.cn/problems/max-chunks-to-make-sorted-ii/
@@ -13,25 +12,19 @@ public class MaxChunksToMakeSortedII {
     }
 
     public static int maxChunksToSorted(int[] arr) {
-        int[] sortedArr = arr.clone();
-        Arrays.sort(sortedArr);
-        Map<Integer, Integer> count = new HashMap<>();
-        int ans = 0;
-        for (int i = 0; i < arr.length; i++) {
-            int x = arr[i], y = sortedArr[i];
-            count.put(x, count.getOrDefault(x, 0) + 1);
-            if (count.get(x) == 0) {
-                count.remove(x);
-            }
-            count.put(y, count.getOrDefault(y, 0) - 1);
-            if (count.get(y) == 0) {
-                count.remove(y);
-            }
-            if (count.isEmpty()) {
-                ans++;
+        Deque<Integer> stack = new ArrayDeque<>();
+        for (int num : arr) {
+            if (stack.isEmpty() || num >= stack.peek()) {
+                stack.push(num);
+            } else {
+                int max = stack.pop();
+                while (!stack.isEmpty() && stack.peek() > num) {
+                    stack.pop();
+                }
+                stack.push(max);
             }
         }
-        return ans;
+        return stack.size();
     }
 
 }
