@@ -10,11 +10,10 @@ public class MaxChunksToMakeSorted {
     }
 
     public static int maxChunksToSorted(int[] arr) {
-        int ans = 0, mask = 0, max = Integer.MIN_VALUE;
-        for (int num : arr) {
-            mask |= 1 << num;
-            max = Math.max(max, num);
-            if ((1 << (max + 1)) - 1 == mask) {
+        int ans = 0, max = Integer.MIN_VALUE;
+        for (int i = 0; i < arr.length; i++) {
+            max = Math.max(max, arr[i]);
+            if (i == max) {
                 ans++;
             }
         }
