@@ -1,5 +1,6 @@
 import java.util.Arrays;
-import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 768. 最多能完成排序的块 II：https://leetcode.cn/problems/max-chunks-to-make-sorted-ii/
@@ -12,17 +13,21 @@ public class MaxChunksToMakeSortedII {
     }
 
     public static int maxChunksToSorted(int[] arr) {
-        int n = arr.length;
-        int[][] m = new int[n][2];
-        for (int i = 0; i < n; i++) {
-            m[i][0] = arr[i];
-            m[i][1] = i;
-        }
-        Arrays.sort(m, Comparator.comparingInt(a -> a[0]));
-        int ans = 0, max = -1;
-        for (int i = 0; i < n; i++) {
-            max = Math.max(max, m[i][1]);
-            if (max == i) {
+        int[] sortedArr = arr.clone();
+        Arrays.sort(sortedArr);
+        Map<Integer, Integer> count = new HashMap<>();
+        int ans = 0;
+        for (int i = 0; i < arr.length; i++) {
+            int x = arr[i], y = sortedArr[i];
+            count.put(x, count.getOrDefault(x, 0) + 1);
+            if (count.get(x) == 0) {
+                count.remove(x);
+            }
+            count.put(y, count.getOrDefault(y, 0) - 1);
+            if (count.get(y) == 0) {
+                count.remove(y);
+            }
+            if (count.isEmpty()) {
                 ans++;
             }
         }
