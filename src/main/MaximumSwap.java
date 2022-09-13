@@ -11,19 +11,22 @@ public class MaximumSwap {
 
     public static int maximumSwap(int num) {
         char[] digits = String.valueOf(num).toCharArray();
-        for (int i = 0; i < digits.length; i++) {
-            int maxIndex = i;
-            for (int j = i + 1; j < digits.length; j++) {
-               if (digits[j] >= digits[maxIndex]) {
-                   maxIndex = j;
-               }
+        int n = digits.length;
+        int maxIndex = n - 1;
+        int index1 = -1, index2 = -1;
+        for (int i = n - 1; i >= 0; i--) {
+            if (digits[i] > digits[maxIndex]) {
+                maxIndex = i;
+            } else if (digits[i] < digits[maxIndex]) {
+                index1 = i;
+                index2 = maxIndex;
             }
-            if (maxIndex != i && digits[maxIndex] != digits[i]) {
-                char temp = digits[maxIndex];
-                digits[maxIndex] = digits[i];
-                digits[i] = temp;
-                return Integer.parseInt(new String(digits));
-            }
+        }
+        if (index1 != -1) {
+            char temp = digits[index1];
+            digits[index1] = digits[index2];
+            digits[index2] = temp;
+            return Integer.parseInt(new String(digits));
         }
         return num;
     }
