@@ -1,6 +1,4 @@
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 1636. 按照频率将数组升序排序：https://leetcode.cn/problems/sort-array-by-increasing-frequency/
@@ -12,13 +10,22 @@ public class SortArrayByIncreasingFrequency {
     }
 
     public static int[] frequencySort(int[] nums) {
-        Map<Integer, Integer> count = new HashMap<>();
+        int[] vals = new int[201];
         for (int num : nums) {
-            count.put(num, count.getOrDefault(num, 0) + 1);
+            if (vals[num + 100] == 0) {
+                vals[num + 100] = 100 - num;
+            }
+            vals[num + 100] += 201;
         }
-        return Arrays.stream(nums).boxed()
-            .sorted((a, b) -> count.get(a) != count.get(b) ? count.get(a) - count.get(b) : b - a)
-            .mapToInt(a -> a).toArray();
+        Arrays.sort(vals);
+        int[] ans = new int[nums.length];
+        int pos = 0;
+        for (int v : vals) {
+            for (int i = 0, count = v / 201, num = 100 - v % 201; i < count; i++) {
+                ans[pos++] = num;
+            }
+        }
+        return ans;
     }
 
 }
