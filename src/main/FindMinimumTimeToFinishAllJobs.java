@@ -9,33 +9,39 @@ public class FindMinimumTimeToFinishAllJobs {
 
     }
 
-    int ans = Integer.MAX_VALUE;
-
     public int minimumTimeRequired(int[] jobs, int k) {
         Arrays.sort(jobs);
-        dfs(jobs, 0, new int[k]);
-        return ans;
+        int left = jobs[jobs.length - 1], right = Arrays.stream(jobs).sum();
+        while (left < right) {
+            int mid = (left + right) >> 1;
+            if (check(jobs, k, mid)) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return left;
     }
 
-    private void dfs(int[] jobs, int index, int[] workers) {
-        if (index >= jobs.length) {
-            int t = workers[0];
-            for (int worker : workers) {
-                t = Math.max(t, worker);
-            }
-            ans = Math.min(ans, t);
-            return;
+    private boolean check(int[] jobs, int k, int limit) {
+        return dfs(jobs, new int[k], jobs.length - 1, limit);
+    }
+
+    private  boolean dfs(int[] jobs, int[] workers, int index, int limit) {
+        if (index < 0) {
+            return true;
         }
         for (int i = 0; i < workers.length; i++) {
             workers[i] += jobs[index];
-            if (workers[i] < ans) {
-                dfs(jobs, index + 1, workers);
+            if (workers[i] <= limit && dfs(jobs, workers, index - 1, limit)) {
+                return true;
             }
             workers[i] -= jobs[index];
-            if (workers[i] == 0) {
+            if (workers[i] == 0 || workers[i] + jobs[index] == limit) {
                 break;
             }
         }
+        return false;
     }
 
 }
