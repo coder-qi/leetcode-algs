@@ -12,49 +12,40 @@ public class PartitionToKEqualSumSubsets {
             .canPartitionKSubsets(new int[] {1,1,1,1,2,2,2,2}, 2));
     }
 
-    int[] nums;
-    int avg, n;
-    boolean[] dp;
-
     public boolean canPartitionKSubsets(int[] nums, int k) {
-        this.nums = nums;
-        n = nums.length;
-        int sum = 0;
+        int sum = 0, n = nums.length;
         for (int num : nums) {
             sum += num;
         }
         if (sum % k != 0) {
             return false;
         }
-        avg = sum / k;
+        int per = sum / k;
         Arrays.sort(nums);
-        if (avg < nums[n - 1]) {
+        if (per < nums[n - 1]) {
             return false;
         }
-        dp = new boolean[1 << n];
-        Arrays.fill(dp, true);
-        return dfs((1 << n) - 1, 0);
-    }
-
-    private boolean dfs(int mask, int sum) {
-        if (mask == 0) {
-            return true;
-        }
-        if (!dp[mask]) {
-            return dp[mask];
-        }
-        dp[mask] = false;
-        for (int i = 0; i < n; i++) {
-            if (nums[i] + sum > avg) {
-                break;
+        boolean[] dp = new boolean[1 << n];
+        int[] curSum = new int[1 << n];
+        dp[0] = true;
+        for (int i = 0; i < 1 << n; i++) {
+            if (!dp[i]) {
+                continue;
             }
-            if ((mask & (1 << i)) != 0) {
-                if (dfs(mask ^ (1 << i), (nums[i] + sum) % avg)) {
-                    return true;
+            for (int j = 0; j < n; j++) {
+                if (curSum[i] + nums[j] > per) {
+                    break;
+                }
+                if (((i >> j) & 1) == 0) {
+                    int next = i | (1 << j);
+                    if (!dp[next]) {
+                        curSum[next] = (curSum[i] + nums[j]) % per;
+                        dp[next] = true;
+                    }
                 }
             }
         }
-        return false;
+        return dp[(1 << n) - 1];
     }
 
 }
