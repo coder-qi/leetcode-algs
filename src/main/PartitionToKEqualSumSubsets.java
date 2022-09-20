@@ -6,10 +6,19 @@ import java.util.Arrays;
 public class PartitionToKEqualSumSubsets {
 
     public static void main(String[] args) {
-
+        System.out.println(new PartitionToKEqualSumSubsets()
+            .canPartitionKSubsets(new int[] {4,3,2,3,5,2,1}, 4));
+        System.out.println(new PartitionToKEqualSumSubsets()
+            .canPartitionKSubsets(new int[] {1,1,1,1,2,2,2,2}, 2));
     }
 
-    public static boolean canPartitionKSubsets(int[] nums, int k) {
+    int[] nums;
+    int avg, n;
+    boolean[] dp;
+
+    public boolean canPartitionKSubsets(int[] nums, int k) {
+        this.nums = nums;
+        n = nums.length;
         int sum = 0;
         for (int num : nums) {
             sum += num;
@@ -17,23 +26,32 @@ public class PartitionToKEqualSumSubsets {
         if (sum % k != 0) {
             return false;
         }
-        int[] buckets = new int[k];
-        Arrays.fill(buckets, sum / k);
+        avg = sum / k;
         Arrays.sort(nums);
-        return dfs(nums, nums.length - 1, buckets);
+        if (avg < nums[n - 1]) {
+            return false;
+        }
+        dp = new boolean[1 << n];
+        Arrays.fill(dp, true);
+        return dfs((1 << n) - 1, 0);
     }
 
-    private static boolean dfs(int[] nums, int numIndex, int[] buckets) {
-        if (numIndex < 0) {
+    private boolean dfs(int mask, int sum) {
+        if (mask == 0) {
             return true;
         }
-        for (int i = 0; i < buckets.length; i++) {
-            if (buckets[i] == nums[numIndex] || (numIndex > 0 && buckets[i] - nums[numIndex] >= nums[0])) {
-                buckets[i] -= nums[numIndex];
-                if (dfs(nums, numIndex - 1, buckets)) {
+        if (!dp[mask]) {
+            return dp[mask];
+        }
+        dp[mask] = false;
+        for (int i = 0; i < n; i++) {
+            if (nums[i] + sum > avg) {
+                break;
+            }
+            if ((mask & (1 << i)) != 0) {
+                if (dfs(mask ^ (1 << i), (nums[i] + sum) % avg)) {
                     return true;
                 }
-                buckets[i] += nums[numIndex];
             }
         }
         return false;
