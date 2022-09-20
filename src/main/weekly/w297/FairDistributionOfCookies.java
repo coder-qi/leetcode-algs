@@ -1,8 +1,6 @@
 
 package weekly.w297;
 
-import java.util.Arrays;
-
 import static util.ArrayUtils.array;
 
 /**
@@ -11,35 +9,27 @@ import static util.ArrayUtils.array;
 public class FairDistributionOfCookies {
 
     public int distributeCookies(int[] cookies, int k) {
-        Arrays.sort(cookies);
-        int left = cookies[cookies.length - 1], right = Arrays.stream(cookies).sum();
-        while (left < right) {
-            int mid = (left + right) >> 1;
-            if (check(cookies, k, mid)) {
-                right = mid;
-            } else {
-                left = mid + 1;
+        int n = cookies.length;
+        int[] sum = new int[1 << n];
+        for (int i = 1; i < (1 << n); i++) {
+            int x = Integer.numberOfTrailingZeros(i), y = i - (1 << x);
+            sum[i] = sum[y] + cookies[x];
+        }
+        
+        int[][] dp = new int[k][1 << n];
+        for (int i = 0; i < (1 << n); i++) {
+            dp[0][i] = sum[i];
+        }
+        for (int i = 1; i < k; i++) {
+            for (int j = 0; j < (1 << n); j++) {
+                int min = Integer.MAX_VALUE;
+                for (int x = j; x != 0; x = (x - 1) & j) {
+                    min = Math.min(min, Math.max(dp[i - 1][j - x], sum[x]));
+                }
+                dp[i][j] = min;
             }
         }
-        return left;
-    }
-
-    private boolean check(int[] cookies, int k, int limit) {
-        return dfs(cookies, new int[k], cookies.length - 1, limit);
-    }
-
-    private boolean dfs(int[] cookies, int[] count, int index, int limit) {
-        if (index < 0) {
-            return true;
-        }
-        for (int i = 0; i < count.length; i++) {
-            count[i] += cookies[index];
-            if (count[i] <= limit && dfs(cookies, count, index - 1, limit)) {
-                return true;
-            }
-            count[i] -= cookies[index];
-        }
-        return false;
+        return dp[k - 1][(1 << n) - 1];
     }
 
     public static void main(String[] args) {
