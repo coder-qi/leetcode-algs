@@ -13,12 +13,12 @@ public class FindMinimumTimeToFinishAllJobs {
 
     public int minimumTimeRequired(int[] jobs, int k) {
         Arrays.sort(jobs);
-        dfs(jobs, jobs.length - 1, new int[k]);
+        dfs(jobs, 0, new int[k]);
         return ans;
     }
 
     private void dfs(int[] jobs, int index, int[] workers) {
-        if (index < 0) {
+        if (index >= jobs.length) {
             int t = workers[0];
             for (int worker : workers) {
                 t = Math.max(t, worker);
@@ -29,7 +29,7 @@ public class FindMinimumTimeToFinishAllJobs {
         for (int i = 0; i < workers.length; i++) {
             workers[i] += jobs[index];
             if (workers[i] < ans) {
-                dfs(jobs, index - 1, workers);
+                dfs(jobs, index + 1, workers);
             }
             workers[i] -= jobs[index];
             if (workers[i] == 0) {
