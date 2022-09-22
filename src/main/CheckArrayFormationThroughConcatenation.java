@@ -1,4 +1,6 @@
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import static util.ArrayUtils.matrix;
 
@@ -14,21 +16,20 @@ public class CheckArrayFormationThroughConcatenation {
     }
 
     public static boolean canFormArray(int[] arr, int[][] pieces) {
-        int n = arr.length;
-        for (int[] piece : pieces) {
-            boolean found = false;
-            for (int i = 0; i < n; i++) {
-                if (arr[i] == piece[0]) {
-                    if (piece.length > n - i || !Arrays.equals(arr, i, i + piece.length,
-                            piece, 0, piece.length)) {
-                        return false;
-                    }
-                    found = true;
-                }
-            }
-            if (!found) {
+        Map<Integer, Integer> pieceIndex = new HashMap<>();
+        for (int i = 0; i < pieces.length; i++) {
+            pieceIndex.put(pieces[i][0], i);
+        }
+        for (int i = 0; i < arr.length;) {
+            int j = pieceIndex.getOrDefault(arr[i], -1);
+            if (j == -1) {
                 return false;
             }
+            int[] piece = pieces[j];
+            if (!Arrays.equals(arr, i, i + piece.length, piece, 0, piece.length)) {
+                return false;
+            }
+            i += piece.length;
         }
         return true;
     }
