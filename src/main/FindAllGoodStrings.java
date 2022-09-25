@@ -17,6 +17,7 @@ public class FindAllGoodStrings {
     static final int MOD = (int) (1e9 + 7);
 
     int[][][] memo = new int[500][50][4];
+    int[][] statsMemo = new int[50][28];
     int n;
     char[] chars1, chars2;
     String evil;
@@ -31,6 +32,9 @@ public class FindAllGoodStrings {
             for (int j = 0; j < 50; j++) {
                 Arrays.fill(memo[i][j], -1);
             }
+        }
+        for (int i = 0; i < 50; i++) {
+            Arrays.fill(statsMemo[i], -1);
         }
         return dfs(0, 3, 0);
     }
@@ -62,6 +66,9 @@ public class FindAllGoodStrings {
         if (evil.charAt(stats) == ch) {
             return stats + 1;
         }
+        if (statsMemo[stats][ch - 'a'] != -1) {
+            return statsMemo[stats][ch - 'a'];
+        }
         String s = evil.substring(0, stats) + ch;
         for (int i = 1; i < s.length(); i++) {
             String t = s.substring(i);
@@ -73,9 +80,11 @@ public class FindAllGoodStrings {
                 }
             }
             if (matched) {
+                statsMemo[stats][ch - 'a'] = t.length();
                 return t.length();
             }
         }
+        statsMemo[stats][ch - 'a'] = 0;
         return 0;
     }
 
