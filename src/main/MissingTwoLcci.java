@@ -16,20 +16,30 @@ public class MissingTwoLcci {
     }
 
     public static int[] missingTwo(int[] nums) {
-        int m = nums.length, n = m + 2;
-        int sum = 0;
+        int n = nums.length + 2;
+        int x = 0;
         for (int num : nums) {
-            sum += num;
+            x ^= num;
         }
-        int missingTwoSum = (1 + n) * n / 2 - sum;
-        int mid = missingTwoSum / 2; // 其中一个必定小于等于mid，另一个大于mid
-        sum = 0;
+        for (int i = 1; i <= n; i++) {
+            x ^= i;
+        }
+        int lsb = x & -x;
+        int type1 = 0, type2 = 0;
         for (int num : nums) {
-            if (num <= mid) {
-                sum += num;
+            if ((num & lsb) != 0) {
+                type1 ^= num;
+            } else {
+                type2 ^= num;
             }
         }
-        int a = (1 + mid) * mid / 2 - sum, b = missingTwoSum - a;
-        return new int[] {a, b};
+        for (int i = 1; i <= n; i++) {
+            if ((i & lsb) != 0) {
+                type1 ^= i;
+            } else {
+                type2 ^= i;
+            }
+        }
+        return new int[] {type1, type2};
     }
 }
