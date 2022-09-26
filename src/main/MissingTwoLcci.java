@@ -17,28 +17,19 @@ public class MissingTwoLcci {
 
     public static int[] missingTwo(int[] nums) {
         int m = nums.length, n = m + 2;
-        int[] arr = new int[] {-1, -1};
-        for (int i = 0; i < m; i++) {
-            while (nums[i] != -1 && nums[i] != i + 1) {
-                if (nums[i] > m) {
-                    arr[nums[i] - m - 1] = nums[i];
-                    nums[i] = -1;
-                    break;
-                } else {
-                    int j = nums[i] - 1;
-                    int temp = nums[i];
-                    nums[i] = nums[j];
-                    nums[j] = temp;
-                }
+        int sum = 0;
+        for (int num : nums) {
+            sum += num;
+        }
+        int missingTwoSum = (1 + n) * n / 2 - sum;
+        int mid = missingTwoSum / 2; // 其中一个必定小于等于mid，另一个大于mid
+        sum = 0;
+        for (int num : nums) {
+            if (num <= mid) {
+                sum += num;
             }
         }
-        int[] ans = new int[2];
-        for (int i = 0; i < n; i++) {
-            int p = i < m ? nums[i] : arr[i - m];
-            if (p == -1) {
-                ans[ans[0] == 0 ? 0 : 1] = i + 1;
-            }
-        }
-        return ans;
+        int a = (1 + mid) * mid / 2 - sum, b = missingTwoSum - a;
+        return new int[] {a, b};
     }
 }
