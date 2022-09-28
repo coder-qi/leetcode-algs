@@ -1,6 +1,6 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.PriorityQueue;
+import java.util.Set;
 
 /**
  * 面试题 17.09. 第 k 个数：https://leetcode.cn/problems/get-kth-magic-number-lcci/
@@ -12,20 +12,24 @@ public class GetKthMagicNumberLcci {
         System.out.println(getKthMagicNumber(1000)); // 232
     }
 
-    static List<Integer> list = new ArrayList<>(1000);
-    static {
-        for (long a = 1; a <= Integer.MAX_VALUE; a *= 3) {
-            for (long b = 1; a * b <= Integer.MAX_VALUE; b *= 5) {
-                for (long c = 1; a * b * c <= Integer.MAX_VALUE; c *= 7) {
-                    list.add((int) (a * b * c));
+    public static int getKthMagicNumber(int k) {
+        int[] factors = {3, 5, 7};
+        PriorityQueue<Long> pq = new PriorityQueue<>();
+        Set<Long> seen = new HashSet<>();
+        pq.offer(1L);
+        seen.add(1L);
+        int ans = 0;
+        for (int i = 0; i < k; i++) {
+            long cur = pq.poll();
+            ans = (int) cur;
+            for (int factor : factors) {
+                long next = cur * factor;
+                if (seen.add(next)) {
+                    pq.offer(next);
                 }
             }
         }
-        Collections.sort(list);
-    }
-
-    public static int getKthMagicNumber(int k) {
-        return list.get(k - 1);
+        return ans;
     }
 
 }
