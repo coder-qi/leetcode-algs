@@ -7,7 +7,9 @@ public class StringRotationLcci {
         System.out.println(isFlipedString("waterbottle", "erbottlewat")); // true
         System.out.println(isFlipedString("aa", "aba")); // false
         System.out.println(isFlipedString("", "")); // true
-        System.out.println(isFlipedString("abcd", "acdb")); // true
+        System.out.println(isFlipedString("abcd", "acdb")); // false
+        System.out.println(isFlipedString("eCQOKatuwIPRHFftkBmhQfakidjbtRVwblGdpLTtSLbjFzBwIjobHMsPvyucjIEs",
+            "kBmhQfakidjbtRVwblGdpLTtSLbjFzBwIjobHMsPvyucjIEseCQOKatuwIPRHFft")); // true
     }
 
     public static boolean isFlipedString(String s1, String s2) {
@@ -18,17 +20,25 @@ public class StringRotationLcci {
         if (n == 0) {
             return true;
         }
-        for (int p2 = 0; p2 < n; p2++) {
-            int i = 0, j = p2;
-            while (i < n && s1.charAt(i) == s2.charAt(j)) {
-                i++;
-                j = (j + 1) % n;
-            }
-            if (i == n) {
-                return true;
+        int[][][] count = new int[58][58][2];
+        for (int i = 0; i < n; i++) {
+            int cur = s1.charAt(i) - 'A',
+                prev = s1.charAt((i - 1 + n) % n) - 'A',
+                next = s1.charAt((i + 1 + n) % n) - 'A';
+            count[cur][prev][0]++;
+            count[cur][next][1]++;
+        }
+        for (int i = 0; i < n; i++) {
+            int cur = s2.charAt(i) - 'A',
+                prev = s2.charAt((i - 1 + n) % n) - 'A',
+                next = s2.charAt((i + 1 + n) % n) - 'A';
+            count[cur][prev][0]--;
+            count[cur][next][1]--;
+            if (count[cur][prev][0] < 0 || count[cur][next][1] < 0) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
 }
