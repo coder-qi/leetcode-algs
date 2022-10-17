@@ -1,6 +1,3 @@
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * 904. 水果成篮：https://leetcode.cn/problems/fruit-into-baskets/
  */
@@ -11,16 +8,18 @@ public class FruitIntoBaskets {
     }
 
     public static int totalFruit(int[] fruits) {
-        Map<Integer, Integer> cnt = new HashMap<>();
         int n = fruits.length, ans = 0;
+        int[] cnt = new int[n + 1];
+        int kind = 0;
         for (int right = 0, left = 0; right < n; right++) {
-            cnt.put(fruits[right], cnt.getOrDefault(fruits[right], 0) + 1);
-            while (left < n && cnt.size() > 2) {
-                int x = cnt.get(fruits[left]);
-                if (x == 1) {
-                    cnt.remove(fruits[left]);
-                } else {
-                    cnt.put(fruits[left], x - 1);
+            if (cnt[fruits[right]] == 0) {
+                kind++;
+            }
+            cnt[fruits[right]]++;
+            while (left < n && kind > 2) {
+                cnt[fruits[left]]--;
+                if (cnt[fruits[left]] == 0) {
+                    kind--;
                 }
                 left++;
             }
