@@ -1,11 +1,13 @@
+import java.util.Arrays;
+
 /**
  * 410. 分割数组的最大值：https://leetcode.cn/problems/split-array-largest-sum/description/
  */
 public class SplitArrayLargestSum {
 
-    int res = Integer.MAX_VALUE;
     int[] preSum;
     int n;
+    int[][] mem;
 
     public int splitArray(int[] nums, int k) {
         n = nums.length;
@@ -13,19 +15,26 @@ public class SplitArrayLargestSum {
         for (int i = 1; i <= n; i++) {
             preSum[i] = preSum[i - 1] + nums[i - 1];
         }
-        process(0, k, 0);
-        return res;
+        mem = new int[n][k + 1];
+        for (int i = 0; i < n; i++) {
+            Arrays.fill(mem[i], -1);
+        }
+        return process(0, k);
     }
 
-    private void process(int index, int k, int maxSum) {
+    private int process(int index, int k) {
         if (k == 1) {
-            maxSum = Math.max(maxSum, preSum[n] - preSum[index]);
-            res = Math.min(res, maxSum);
-            return;
+            return preSum[n] - preSum[index];
         }
+        if (mem[index][k] != -1) {
+            return mem[index][k];
+        }
+        int res = Integer.MAX_VALUE;
         for (int i = index; i < n - k + 1; i++) {
-            process(i + 1, k - 1, Math.max(maxSum, preSum[i + 1] - preSum[index]));
+            int p = process(i + 1, k - 1);
+            res = Math.min(res, Math.max(p, preSum[i + 1] - preSum[index]));
         }
+        return mem[index][k] = res;
     }
 
     public static void main(String[] args) {
