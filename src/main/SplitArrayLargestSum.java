@@ -5,36 +5,25 @@ import java.util.Arrays;
  */
 public class SplitArrayLargestSum {
 
-    int[] preSum;
-    int n;
-    int[][] mem;
-
     public int splitArray(int[] nums, int k) {
-        n = nums.length;
-        preSum = new int[n + 1];
+        int n = nums.length;
+        int[] preSum = new int[n + 1];
         for (int i = 1; i <= n; i++) {
             preSum[i] = preSum[i - 1] + nums[i - 1];
         }
-        mem = new int[n][k + 1];
-        for (int i = 0; i < n; i++) {
-            Arrays.fill(mem[i], -1);
+        int[][] dp = new int[n + 1][k + 1];
+        for (int i = 0; i <= n; i++) {
+            Arrays.fill(dp[i], Integer.MAX_VALUE);
         }
-        return process(0, k);
-    }
-
-    private int process(int index, int k) {
-        if (k == 1) {
-            return preSum[n] - preSum[index];
+        dp[0][0] = 0;
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= Math.min(i, k); j++) {
+                for (int m = 0; m < i; m++) {
+                    dp[i][j] = Math.min(dp[i][j], Math.max(dp[m][j - 1], preSum[i] - preSum[m]));
+                }
+            }
         }
-        if (mem[index][k] != -1) {
-            return mem[index][k];
-        }
-        int res = Integer.MAX_VALUE;
-        for (int i = index; i < n - k + 1; i++) {
-            int p = process(i + 1, k - 1);
-            res = Math.min(res, Math.max(p, preSum[i + 1] - preSum[index]));
-        }
-        return mem[index][k] = res;
+        return dp[n][k];
     }
 
     public static void main(String[] args) {
