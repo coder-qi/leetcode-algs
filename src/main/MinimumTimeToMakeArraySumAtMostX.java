@@ -9,38 +9,30 @@ public class MinimumTimeToMakeArraySumAtMostX {
 
     public static int minimumTime(List<Integer> nums1, List<Integer> nums2, int x) {
         // TODO 待做
-        long sum1 = sum(nums1);
-        if (sum1 <= x) {
-            return 0;
-        }
-        long sum2 = sum(nums2);
         int n = nums1.size();
         int[][] sortedNums2 = new int[n][2];
+        int sum1 = 0;
+        int sum2 = 0;
         for (int i = 0; i < n; i++) {
             sortedNums2[i][0] = i;
             sortedNums2[i][1] = nums2.get(i);
+            sum1 += nums1.get(0);
+            sum2 += nums2.get(0);
         }
-        Arrays.sort(sortedNums2, ((o1, o2) -> o1[1] != o2[1] ? o1[1] - o2[1] : nums1.get(o1[0]).compareTo(nums1.get(o2[0]))));
-        for (int i = 0, ans = 0; i < n; i++) {
-            if (sortedNums2[i][1] == 0) {
-                continue;
+        Arrays.sort(sortedNums2, Comparator.comparingInt(o -> o[1]));
+        int[][] dp = new int[n + 1][n + 1];
+        for (int i = 1; i <= n; i++) {
+            for (int j = i; j <= n; j++) {
+                int b = sortedNums2[i - 1][0], a = sortedNums2[i - 1][1];
+                dp[i][j] = Math.max(dp[i][j - 1], dp[i - 1][j - 1] + nums1.get(b) + (j - 1) * a);
             }
-            ans++;
-            sum1 += sum2;
-            sum1 -= nums1.get(sortedNums2[i][0]) + (long) (i + 1) * sortedNums2[i][1];
-            if (sum1 <= x) {
-                return ans;
+        }
+        for (int j = 1; j <= n; j++) {
+            if (sum1 + j * sum2 - dp[n][j] <= x) {
+                return j;
             }
         }
         return -1;
-    }
-
-    private static long sum(List<Integer> nums) {
-        long sum = 0;
-        for (int num : nums) {
-            sum += num;
-        }
-        return sum;
     }
 
     public static void main(String[] args) {
