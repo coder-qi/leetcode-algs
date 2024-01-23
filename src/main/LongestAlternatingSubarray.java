@@ -3,19 +3,27 @@
  */
 public class LongestAlternatingSubarray {
 
-    public int alternatingSubarray(int[] nums) {
+    public static int alternatingSubarray(int[] nums) {
         int ans = -1;
-        for (int i = 0; i < nums.length; i++) {
-            for (int j = i + 1, flag = 1; j < nums.length; j++) {
-                if (nums[j] - nums[j - 1] == flag) {
-                    flag *= -1;
-                    ans = Math.max(ans, j - i + 1);
-                } else {
-                    break;
+        for (int i = 1, j = 0, flag = 1; i < nums.length;) {
+            if (nums[i] - nums[i - 1] == flag) {
+                flag *= -1;
+                j ++;
+                i ++;
+                ans = Math.max(ans, j + 1);
+            } else {
+                if (j == 0) {
+                    i++;
                 }
+                j = 0;
+                flag = 1;
             }
         }
-        return ans;
+        return ans == 0 ? -1 : ans;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(alternatingSubarray(new int[] {2, 3, 4, 3, 4}));
     }
 
 }
