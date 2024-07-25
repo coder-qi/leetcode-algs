@@ -66,13 +66,70 @@ public class MinimumOperationsToMakeASpecialNumber {
         return res;
     }
 
+    public static int minimumOperations2(String num) {
+        // 25 50 75 00 结尾才可能被25整除
+        int N = num.length();
+        int res = 0;
+        char last = 0;  // 5
+        char last2 = 0; // 0
+        boolean ok = false;
+        for (int i = N - 1; i >= 0; i--) {
+            char ch = num.charAt(i);
+            if (ch == '2' || ch == '7') {
+                // 25 75
+                if (last == '5') {
+                    if (last2 != 0) {
+                        res++;
+                    }
+                    ok = true;
+                    break;
+                }
+                res++;
+                continue;
+            }
+            if (ch == '5' || ch == '0') {
+                // 50 00
+                if (last2 == '0') {
+                    if (last != 0) {
+                        res++;
+                    }
+                    ok = true;
+                    break;
+                }
+                if (ch == '5') {
+                    if (last == 0) {
+                        last = ch;
+                    } else if (last == '5') { // 防止 55
+                        last = ch;
+                        res++;
+                    }
+                } else if (ch == '0') {
+                    last2 = ch;
+                }
+            } else {
+                res++;
+            }
+        }
+        if (!ok) {
+            if (last != 0) {
+                res++;
+            }
+            if (last2 != 0) {
+                res++;
+            }
+        }
+        return res;
+    }
+
     public static void main(String[] args) {
        // System.out.println(minimumOperations("2908305"));
         //System.out.println(minimumOperations("15"));
-        System.out.println(minimumOperations("51"));
-        System.out.println(minimumOperations("35778477915111315314455696633"));
+        //System.out.println(minimumOperations2("51"));
+        // 20
+        //System.out.println(minimumOperations2("35778477915111315314455696633"));
         // 25
-        System.out.println(minimumOperations("86305094841399619139843436167737787457334866691767899648084608668568815311769746637"));
+        //System.out.println(minimumOperations2("86305094841399619139843436167737787457334866691767899648084608668568815311769746637"));
+        System.out.println(minimumOperations2("2810533"));
     }
 
 }
