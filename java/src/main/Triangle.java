@@ -6,7 +6,7 @@ import java.util.List;
  */
 public class Triangle {
 
-    public static int minimumTotal(List<List<Integer>> triangle) {
+    /*public static int minimumTotal(List<List<Integer>> triangle) {
         int n = triangle.size();
         int[] dp = new int[n];
         dp[0] = triangle.get(0).get(0);
@@ -28,6 +28,24 @@ public class Triangle {
         }
         return result;
 
+    }*/
+
+    public static int minimumTotal(List<List<Integer>> triangle) {
+        int[][] memo = new int[triangle.size()][triangle.size()];
+        for (int[] rows : memo) {
+            Arrays.fill(rows, Integer.MAX_VALUE);
+        }
+        return dp(triangle, 0, 0, memo);
+    }
+
+    private static int dp(List<List<Integer>> triangle, int i, int j, int[][] memo) {
+        if (i == triangle.size() - 1) {
+            return triangle.get(i).get(j);
+        }
+        if (memo[i][j] == Integer.MAX_VALUE) {
+            memo[i][j] = triangle.get(i).get(j) + Math.min(dp(triangle, i + 1, j, memo), dp(triangle, i + 1, j + 1, memo));
+        }
+        return memo[i][j];
     }
 
     public static void main(String[] args) {
