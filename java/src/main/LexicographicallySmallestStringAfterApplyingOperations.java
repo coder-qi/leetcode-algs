@@ -8,23 +8,23 @@ public class LexicographicallySmallestStringAfterApplyingOperations {
     public String findLexSmallestString(String s, int a, int b) {
        HashSet<String> all = new HashSet<>(64);
        all.add(s);
-       HashSet<String> nextSet = new HashSet<>(64);
-       nextSet.add(s);
+       Deque<String> q = new ArrayDeque<>();
+       q.add(s);
        String ans = s;
-       while (!nextSet.isEmpty()) {
-           List<String> list = new ArrayList<>(nextSet);
-           nextSet.clear();
-           for (String str : list) {
-               if (str.compareTo(ans) < 0) {
-                   ans = str;
+       while (!q.isEmpty()) {
+           int size = q.size();
+           for (int i = 0; i < size; i++) {
+               String curr = q.poll();
+               if (curr.compareTo(ans) < 0) {
+                   ans = curr;
                }
-               String s1 = add(str, a);
+               String s1 = add(curr, a);
                if (all.add(s1)) {
-                   nextSet.add(s1);
+                   q.add(s1);
                }
-               String s2 = rotate(str, b);
+               String s2 = rotate(curr, b);
                if (all.add(s2)) {
-                   nextSet.add(s2);
+                   q.add(s2);
                }
            }
        }
