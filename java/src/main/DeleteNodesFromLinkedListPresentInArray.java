@@ -1,7 +1,5 @@
-import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * 3217. 从链表中移除在数组中存在的节点：https://leetcode.cn/problems/delete-nodes-from-linked-list-present-in-array
@@ -9,11 +7,14 @@ import java.util.stream.IntStream;
 public class DeleteNodesFromLinkedListPresentInArray {
 
     public ListNode modifiedList(int[] nums, ListNode head) {
-        Arrays.sort(nums);
+        Set<Integer> numSet = new HashSet<>(nums.length);
+        for (int num : nums) {
+            numSet.add(num);
+        }
         ListNode dummy = new ListNode(0, head);
         ListNode prev = dummy;
         while (prev.next != null) {
-            if (Arrays.binarySearch(nums, prev.next.val) >= 0) {
+            if (numSet.contains(prev.next.val)) {
                 prev.next = prev.next.next;
             } else {
                 prev = prev.next;
