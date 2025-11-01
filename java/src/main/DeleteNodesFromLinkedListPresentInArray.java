@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -8,13 +9,11 @@ import java.util.stream.IntStream;
 public class DeleteNodesFromLinkedListPresentInArray {
 
     public ListNode modifiedList(int[] nums, ListNode head) {
-        Set<Integer> numSet = IntStream.of(nums)
-                .boxed()
-                .collect(Collectors.toSet());
+        Arrays.sort(nums);
         ListNode dummy = new ListNode(0, head);
         ListNode prev = dummy;
         while (prev.next != null) {
-            if (numSet.contains(prev.next.val)) {
+            if (Arrays.binarySearch(nums, prev.next.val) >= 0) {
                 prev.next = prev.next.next;
             } else {
                 prev = prev.next;
