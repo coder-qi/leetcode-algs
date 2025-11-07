@@ -1,6 +1,9 @@
 import util.ArrayUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 3607. 电网维护：https://leetcode.cn/problems/power-grid-maintenance
@@ -18,48 +21,60 @@ public class PowerGridMaintenance {
             g[x].add(y);
             g[y].add(x);
         }
-        
-        List<PriorityQueue<Integer>> heaps = new ArrayList<>();
-        heaps.add(new PriorityQueue<>());
+
+        int cc = 1;
         int[] belong = new int[c + 1];
         for (int i = 1; i <= c; i++) {
             if (belong[i] == 0) {
-                PriorityQueue<Integer> pq = new PriorityQueue<>();
-                dfs(i, heaps.size(), g, pq, belong);
-                heaps.add(pq);
+                dfs(i, cc, g, belong);
+                cc++;
+            }
+        }
+
+        int[] offlineTime = new int[c + 1];
+        Arrays.fill(offlineTime, Integer.MAX_VALUE);
+        for (int i = queries.length - 1; i >= 0; i--) {
+            int op = queries[i][0], x = queries[i][1];
+            if (op == 2) {
+                offlineTime[x] = i;
+            }
+        }
+
+        int[] mn = new int[c + 1];
+        Arrays.fill(mn, Integer.MAX_VALUE);
+        for (int i = 1; i <= c; i++) {
+            if (offlineTime[i] == Integer.MAX_VALUE) {
+                mn[belong[i]] = Math.min(mn[belong[i]], i);
             }
         }
 
         List<Integer> ans = new ArrayList<>();
-        boolean[] offline = new boolean[c + 1];
-        for (int[] query : queries) {
-            int op = query[0];
-            int x = query[1];
-            if (op == 1) {
-                if (!offline[x]) {
-                    ans.add(x);
-                } else {
-                    PriorityQueue<Integer> heap = heaps.get(belong[x]);
-                    while (!heap.isEmpty() && offline[heap.peek()]) {
-                        heap.poll();
-                    }
-                    ans.add(heap.isEmpty() ? -1 : heap.peek());
+        for (int i = queries.length - 1; i >= 0; i--) {
+            int op = queries[i][0], x = queries[i][1];
+            if (op == 2) {
+                if (offlineTime[x] == i) {
+                    mn[belong[x]] = Math.min(mn[belong[x]], x);
                 }
-
-            } else if (op == 2) {
-                offline[x] = true;
+            } else if (op == 1) {
+                if (i <= offlineTime[x]) {
+                    ans.add(x);
+                } else if (mn[belong[x]] != Integer.MAX_VALUE) {
+                    ans.add(mn[belong[x]]);
+                } else {
+                    ans.add(-1);
+                }
             }
         }
 
+        Collections.reverse(ans);
         return ans.stream().mapToInt(i -> i).toArray();
     }
 
-    private void dfs(int x, int number, List<Integer>[] g, PriorityQueue<Integer> pq, int[] belong) {
-        pq.add(x);
-        belong[x] = number;
+    private void dfs(int x, int cc, List<Integer>[] g, int[] belong) {
+        belong[x] = cc;
         for (int y : g[x]) {
             if (belong[y] == 0) {
-                dfs(y, number, g, pq, belong);
+                dfs(y, cc, g, belong);
             }
         }
     }
