@@ -1,27 +1,25 @@
-import java.util.ArrayDeque;
-import java.util.Deque;
-
 /**
  * 3542. 将所有元素变为 0 的最少操作次数：https://leetcode.cn/problems/minimum-operations-to-convert-all-elements-to-zero
  */
 public class MinimumOperationsToConvertAllElementsToZero {
 
     public int minOperations(int[] nums) {
-        Deque<Integer> stack = new ArrayDeque<>();
+        int[] stack = new int[nums.length];
+        int si = -1;
         int ans = 0;
         for (int num : nums) {
             int prevNum = -1;
-            while (!stack.isEmpty() && num < stack.peek()) {
-                if (prevNum != stack.peek()) {
+            while (si >= 0 && num < stack[si]) {
+                if (prevNum != stack[si]) {
                     ans++;
                 }
-                prevNum = stack.pop();
+                prevNum = stack[si--];
             }
-            stack.push(num);
+            stack[++si] = num;
         }
         int prevNum = -1;
-        while (!stack.isEmpty()) {
-            int num = stack.pop();
+        while (si >= 0) {
+            int num = stack[si--];
             if (prevNum != num && num != 0) {
                 ans++;
             }
