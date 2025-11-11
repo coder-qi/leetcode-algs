@@ -1,4 +1,3 @@
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,7 +7,7 @@ import java.util.Map;
 public class OnesAndZeroes {
 
     public int findMaxForm(String[] strs, int m, int n) {
-        Map<String, int[]> countMap = new HashMap<>();
+        Map<String, int[]> countMap = new HashMap<>(strs.length);
         for (String str : strs) {
             int zeroCount = 0;
             int onesCount = 0;
@@ -21,29 +20,20 @@ public class OnesAndZeroes {
             }
             countMap.put(str, new int[]{zeroCount, onesCount});
         }
-        int[][][] memo = new int[strs.length][m + 1][n + 1];
-        for (int[][] matrix : memo) {
-            for (int[] arr : matrix) {
-                Arrays.fill(arr, -1);
+        int[][][] dp = new int[strs.length + 1][m + 1][n + 1];
+        for (int i = strs.length - 1; i >= 0; i--) {
+            int[] count = countMap.get(strs[i]);
+            for (int j = 0; j <= m; j++) {
+                for (int k = 0; k <= n; k++) {
+                    int res = dp[i + 1][j][k];
+                    if (j >= count[0] && k >= count[1]) {
+                        res = Math.max(res, dp[i + 1][j - count[0]][k - count[1]] + 1);
+                    }
+                    dp[i][j][k] = res;
+                }
             }
         }
-        return dfs(0, strs, countMap, m, n, memo);
-    }
-
-    private int dfs(int index, String[] strs, Map<String, int[]> countMap, int m, int n, int[][][] memo) {
-        if (index == strs.length) {
-            return 0;
-        }
-        if (memo[index][m][n] != -1) {
-            return memo[index][m][n];
-        }
-        int res = dfs(index + 1, strs, countMap, m, n, memo);
-        int[] count = countMap.get(strs[index]);
-        if (m >= count[0] && n >= count[1]) {
-            res = Math.max(res, dfs(index + 1, strs, countMap, m - count[0], n - count[1], memo) + 1);
-        }
-
-        return memo[index][m][n] = res;
+        return dp[0][m][n];
     }
 
 }
