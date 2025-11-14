@@ -24,14 +24,10 @@ public class IncrementSubmatricesByOne {
         }
 
         for (int i = 0; i < n; i++) {
-            for (int j = 1; j < n; j++) {
-                matrix[i][j] += matrix[i][j - 1];
-            }
-        }
-
-        for (int i = 0; i < n; i++) {
-            for (int j = 1; j < n; j++) {
-                matrix[j][i] += matrix[j - 1][i];
+            int rowSum = 0;
+            for (int j = 0; j < n; j++) {
+                rowSum += matrix[i][j];
+                matrix[i][j] = rowSum + (i == 0 ? 0 : matrix[i - 1][j]);
             }
         }
 
