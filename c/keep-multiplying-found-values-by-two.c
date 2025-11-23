@@ -5,6 +5,8 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+#include "uthash.h"
+
 typedef struct {
     int key;
     UT_hash_handle hh;
