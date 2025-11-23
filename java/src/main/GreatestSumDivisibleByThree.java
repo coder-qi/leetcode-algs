@@ -9,26 +9,29 @@ public class GreatestSumDivisibleByThree {
 
     public int maxSumDivThree(int[] nums) {
         int n = nums.length;
-        int[][] dp = new int[n][3];
-        dp[0][nums[0] % 3] = nums[0];
+        int[] dp = new int[3];
+        dp[nums[0] % 3] = nums[0];
 
         for (int i = 1; i < n; i++) {
             int k = nums[i] % 3;
+            int dp0 = dp[0];
+            int dp1 = dp[1];
+            int dp2 = dp[2];
             if (k == 0) {
-                dp[i][0] = dp[i - 1][0] + nums[i];
-                dp[i][1] = dp[i - 1][1] == 0 ? 0 : (dp[i - 1][1] + nums[i]);
-                dp[i][2] = dp[i - 1][2] == 0 ? 0 : (dp[i - 1][2] + nums[i]);
+                dp[0] = dp0 + nums[i];
+                dp[1] = dp1 == 0 ? 0 : (dp1 + nums[i]);
+                dp[2] = dp2 == 0 ? 0 : (dp2 + nums[i]);
             } else if (k == 1) {
-                dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][2] == 0 ? 0 : dp[i - 1][2] + nums[i]);
-                dp[i][1] = Math.max(dp[i - 1][1], dp[i - 1][0] + nums[i]);
-                dp[i][2] = Math.max(dp[i - 1][2], dp[i - 1][1] == 0 ? 0 : dp[i - 1][1] + nums[i]);
+                dp[0] = Math.max(dp0, dp2 == 0 ? 0 : dp2 + nums[i]);
+                dp[1] = Math.max(dp1, dp0 + nums[i]);
+                dp[2] = Math.max(dp2, dp1 == 0 ? 0 : dp1 + nums[i]);
             } else {
-                dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] == 0 ? 0 : dp[i - 1][1] + nums[i]);
-                dp[i][1] = Math.max(dp[i - 1][1], dp[i - 1][2] == 0 ? 0 : dp[i - 1][2] + nums[i]);
-                dp[i][2] = Math.max(dp[i - 1][2], dp[i - 1][0] + nums[i]);
+                dp[0] = Math.max(dp0, dp1 == 0 ? 0 : dp1 + nums[i]);
+                dp[1] = Math.max(dp1, dp2 == 0 ? 0 : dp2 + nums[i]);
+                dp[2] = Math.max(dp2, dp0 + nums[i]);
             }
         }
-        return dp[n - 1][0];
+        return dp[0];
     }
 
     public static void main(String[] args) {
