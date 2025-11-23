@@ -1,7 +1,5 @@
 import util.ArrayUtils;
 
-import java.util.*;
-
 /**
  * 1262. 可被三整除的最大和：https://leetcode.cn/problems/greatest-sum-divisible-by-three
  */
@@ -9,29 +7,14 @@ public class GreatestSumDivisibleByThree {
 
     public int maxSumDivThree(int[] nums) {
         int n = nums.length;
-        int[] dp = new int[3];
-        dp[nums[0] % 3] = nums[0];
-
-        for (int i = 1; i < n; i++) {
-            int k = nums[i] % 3;
-            int dp0 = dp[0];
-            int dp1 = dp[1];
-            int dp2 = dp[2];
-            if (k == 0) {
-                dp[0] = dp0 + nums[i];
-                dp[1] = dp1 == 0 ? 0 : (dp1 + nums[i]);
-                dp[2] = dp2 == 0 ? 0 : (dp2 + nums[i]);
-            } else if (k == 1) {
-                dp[0] = Math.max(dp0, dp2 == 0 ? 0 : dp2 + nums[i]);
-                dp[1] = Math.max(dp1, dp0 + nums[i]);
-                dp[2] = Math.max(dp2, dp1 == 0 ? 0 : dp1 + nums[i]);
-            } else {
-                dp[0] = Math.max(dp0, dp1 == 0 ? 0 : dp1 + nums[i]);
-                dp[1] = Math.max(dp1, dp2 == 0 ? 0 : dp2 + nums[i]);
-                dp[2] = Math.max(dp2, dp0 + nums[i]);
+        int[][] dp = new int[2][3];
+        dp[0][1] = dp[0][2] = Integer.MIN_VALUE;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < 3; j++) {
+                dp[(i + 1) % 2][j] = Math.max(dp[i % 2][j], dp[i % 2][(j + nums[i]) % 3] + nums[i]);
             }
         }
-        return dp[0];
+        return dp[n % 2][0];
     }
 
     public static void main(String[] args) {
