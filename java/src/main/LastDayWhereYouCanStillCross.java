@@ -1,7 +1,5 @@
 import util.ArrayUtils;
 
-import java.util.Arrays;
-
 /**
  * 1970. 你能穿过矩阵的最后一天：https://leetcode.cn/problems/last-day-where-you-can-still-cross
  */
@@ -16,7 +14,7 @@ public class LastDayWhereYouCanStillCross {
         }
         int l = 1;
         int r = row * col;
-        boolean[][] vis = new boolean[row][col];
+        int[][] vis = new int[row + 1][col + 1];
         while (l < r) {
             int mid = (l + r) / 2;
             if (check(waterDays, mid, vis)) {
@@ -28,11 +26,8 @@ public class LastDayWhereYouCanStillCross {
         return l - 1;
     }
 
-    private boolean check(int[][] waterDays, int day, boolean[][] vis) {
+    private boolean check(int[][] waterDays, int day, int[][] vis) {
         int col = waterDays[0].length;
-        for (boolean[] rows : vis) {
-            Arrays.fill(rows, false);
-        }
         for (int j = 0; j < col; j++) {
             if (dfs(waterDays, 0, j, day, vis)) {
                 return true;
@@ -41,19 +36,16 @@ public class LastDayWhereYouCanStillCross {
         return false;
     }
 
-    private boolean dfs(int[][] waterDays, int i, int j, int day, boolean[][] vis) {
+    private boolean dfs(int[][] waterDays, int i, int j, int day, int[][] vis) {
         int row = waterDays.length;
         int col = waterDays[0].length;
-        if (i < 0 || j < 0 || j == col) {
+        if (i < 0 || j < 0 || j == col || vis[i][j] == day) {
             return false;
         }
         if (i == row) {
             return true;
         }
-        if (vis[i][j]) {
-            return false;
-        }
-        vis[i][j] = true;
+        vis[i][j] = day;
         return waterDays[i][j] > day &&
                 (dfs(waterDays, i - 1, j, day, vis) || dfs(waterDays, i + 1, j, day, vis) ||
                 dfs(waterDays, i, j - 1, day, vis) || dfs(waterDays, i, j + 1, day, vis));
